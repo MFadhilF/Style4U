@@ -1,10 +1,12 @@
 import React from "react";
 import { Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function DataPribadi() {
+  const navigate = useNavigate(); // Hook untuk redirect
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <button className="mb-4">
+      <button onClick={() => navigate("/")} className="mb-4">
         <span className="text-4xl">&larr;</span>
       </button>
 

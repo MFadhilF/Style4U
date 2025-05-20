@@ -1,10 +1,12 @@
 import { Search, ShoppingCart, ClipboardList, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import style4ulogo from "../../components/assets/style4u-logo.png";
 import cartlogo from "../../components/assets/cart-logo.png";
 import bookmarklogo from "../../components/assets/bookmark-logo.png";
 import accountlogo from "../../components/assets/account-logo.png";
 
 export default function Header() {
+  const navigate = useNavigate(); // Hook untuk redirect
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-md bg-white">
       {/* Kiri: Logo */}
@@ -33,7 +35,7 @@ export default function Header() {
         <button className="cursor-pointer">
           <img src={bookmarklogo} alt="Cart" className="h-6 w-auto" />
         </button>
-        <button className="cursor-pointer">
+        <button onClick={() => navigate("/profile")} className="cursor-pointer">
           <img src={accountlogo} alt="Cart" className="h-6 w-auto" />
         </button>
       </div>
