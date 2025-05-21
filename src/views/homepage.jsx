@@ -1,5 +1,5 @@
 import Footer from "../components/layouts/footer.jsx";
-import Header from "../components/layouts/header.jsx";
+import Header from "../components/layouts/navbar.jsx";
 import Home from "../components/pages/main/home.jsx";
 
 export default function Homepage() {

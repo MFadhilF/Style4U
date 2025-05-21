@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import KaosGrafis from "../../assets/Kaosgrafis.png";
 import BajuVintage from "../../assets/Bajuvintage.png";
 import KaosPolos from "../../assets/Kaospolos.png";
-import DenimRobek from "../../assets/Denimrobek.png";
+import DenimRobek from "../../assets/denimrobek.png";
 
 
 export default function Productscroller() {

@@ -7,7 +7,7 @@ import BajuRajut from "../../assets/Bajurajut.png";
 import JaketDenim from "../../assets/jaket-denim.png";
 import JeansLukis from "../../assets/jeans-lukis.png";
 import KemejaBunga from "../../assets/kemeja-bunga.png";
-import DenimRobek from "../../assets/Denimrobek.png";
+import DenimRobek from "../../assets/denimrobek.png";
 import JaketKulit from "../../assets/jaket-kulit.png";
 import KaosGrafis from "../../assets/Kaosgrafis.png";
 import KaosPolos from "../../assets/Kaospolos.png";

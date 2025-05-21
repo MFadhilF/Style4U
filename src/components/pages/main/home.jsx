@@ -5,7 +5,7 @@ import KaosPendek from "../../assets/Kaospendek.png";
 import Background2 from "../../assets/Background2.png";
 import KaosGrafis from "../../assets/Kaosgrafis.png";
 import KaosPolos from "../../assets/Kaospolos.png";
-import DenimRobek from "../../assets/Denimrobek.png";
+import DenimRobek from "../../assets/denimrobek.png";
 import ProductScroller from "./Productscroller";
 import { useNavigate } from 'react-router-dom';
 

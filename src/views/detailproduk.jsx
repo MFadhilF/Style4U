@@ -1,14 +1,9 @@
-<<<<<<< Updated upstream
 import Header from "../components/layouts/navbar.jsx";
 import Detail from "../components/pages/product/detail/header-detail.jsx";
 import DeskripsiDetail from "../components/pages/product/detail/deskripsi-detail.jsx";
 import RekomendasiDetail from "../components/pages/product/detail/rekomendasi-detail.jsx";
-=======
 import Footer from "../components/layouts/footer";
-import Header from "../components/layouts/header";
-import Detail from "../components/pages/product/detail.jsx";
 
->>>>>>> Stashed changes
 
 export default function DetailProduk() {
   return (

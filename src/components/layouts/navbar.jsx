@@ -3,8 +3,10 @@ import style4ulogo from "../../components/assets/style4u-logo.png";
 import cartlogo from "../../components/assets/cart-logo.png";
 import bookmarklogo from "../../components/assets/bookmark-logo.png";
 import accountlogo from "../../components/assets/account-logo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-md bg-white">
       {/* Kiri: Logo */}
