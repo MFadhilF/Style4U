@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Global CSS (index.css atau App.css) */
+.hide-scrollbar::-webkit-scrollbar {
+  height: 12px;               /* Tebal scrollbar horizontal */
+  background: transparent;     /* biar track tetap transparan */
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.6); 
+  border-radius: 6px;         /* bulatkan sudut thumb */
+}
+
+/* Firefox */
+.hide-scrollbar {
+  scrollbar-width: auto;      /* opsi: auto | thin | none */
+  scrollbar-color: rgba(0,0,0,0.6) transparent;
+}
+
+
