@@ -35,7 +35,7 @@ export default function Header() {
         <button className="cursor-pointer">
           <img src={bookmarklogo} alt="Cart" className="h-6 w-auto" />
         </button>
-        <button className="cursor-pointer">
+        <button onClick={() => navigate("/profile")} className="cursor-pointer">
           <img src={accountlogo} alt="Cart" className="h-6 w-auto" />
         </button>
       </div>
