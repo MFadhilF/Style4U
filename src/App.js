@@ -8,7 +8,8 @@ import Wishlist from "./views/profile-wishlist.jsx";
 import Orders from "./views/profile-orders.jsx";
 import Homepage from "./views/homepage";
 import ProductListPage from "./views/ProductListPage";
-
+import Login from "./views/login.jsx";
+import Register from "./views/register.jsx";
 
 function App() {
   return (
@@ -20,8 +21,10 @@ function App() {
         <Route path="/profile/wishlist" element={<Wishlist />} />
         <Route path="/profile/orders" element={<Orders />} />
         {/* Tambahkan route lain di sini jika diperlukan */}
-        <Route path="/" element={< Homepage/>} />
-        <Route path="/ProductListPage" element={< ProductListPage/>} />
+        <Route path="/" element={<Homepage />} />
+        <Route path="/ProductListPage" element={<ProductListPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );
