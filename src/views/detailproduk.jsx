@@ -4,19 +4,18 @@ import DeskripsiDetail from "../components/pages/product/detail/deskripsi-detail
 import RekomendasiDetail from "../components/pages/product/detail/rekomendasi-detail.jsx";
 import Footer from "../components/layouts/footer";
 
-
 export default function DetailProduk() {
   return (
     <>
       <Header />
-      <main className="p-6">
+      <main>
         <Detail />
         <div className="mt-10 w-full h-[2px] bg-[#000000]"></div>
         <DeskripsiDetail />
         <div className="mt-10 w-full h-[2px] bg-[#000000]"></div>
         <RekomendasiDetail />
       </main>
-      <Footer/>
+      <Footer />
     </>
   );
 }

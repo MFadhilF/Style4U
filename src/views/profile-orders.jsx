@@ -5,7 +5,7 @@ export default function ProfileOrders() {
   return (
     <>
       <RightSidebar />
-      <main className="p-6"></main>
+      <main></main>
       <Orders />
     </>
   );
