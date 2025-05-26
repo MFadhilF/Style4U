@@ -7,7 +7,7 @@ export default function ProductListPage() {
   return (
     <>
       <Header />
-      <main className="p-6">
+      <main>
         <Listproduct />
       </main>
       <Footer/>

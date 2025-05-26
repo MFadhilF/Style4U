@@ -1,23 +1,26 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import LogoImage from "../../../components/assets/style4u-logo.png";
+import LoginBanner from "../../../components/assets/loginbanner.png"; // pastikan file ini ada
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="flex min-h-screen max-w-[1200px] mx-auto">
-      <div className="flex-1 p-10 flex flex-col justify-center">
+    <div className="flex min-h-screen max-w-[1200px] mx-auto items-center text-center">
+      {/* Kiri: Form */}
+      <div className="flex-1 p-10 flex flex-col justify-center items-center">
         <div className="flex items-center mb-5 text-[#a67c52]">
           <img
-            src="Style4U.png"
+            src={LogoImage}
             alt="Style4U Logo"
             className="w-[90px] h-[50px] mr-2"
           />
         </div>
         <h1 className="text-[28px] mb-2 text-[#333] font-bold">Buat Akun</h1>
         <p className="text-[#666] mb-8 text-sm max-w-[350px]">
-          Mudahkan pencarian yang kamu inginkan dengan login di Style4U
+          Mudahkan pencarian yang kamu inginkan dengan login di Style For You
         </p>
         <form className="w-full max-w-[400px]">
           <div className="mb-4">
@@ -74,7 +77,7 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 rounded-full bg-[#ffecd1] text-[#333] font-semibold hover:bg-[#ffe0b3]"
+            className="w-full py-3 rounded-full bg-[#c7e99d] text-[#333] font-semibold hover:bg-[#bde089]"
           >
             Daftar
           </button>
@@ -107,8 +110,14 @@ export default function RegisterPage() {
           </div>
         </form>
       </div>
-      <div className="flex-1 bg-[#fff9e6] rounded-2xl m-5 hidden md:flex items-center justify-center overflow-hidden">
-        <div className="w-4/5 h-4/5 bg-[#ffe0b3] rounded-2xl"></div>
+
+      {/* Kanan: Banner Ilustrasi */}
+      <div className="w-full h-[600px] flex-1 bg-[#e1f3af] rounded-3xl m-5 hidden md:flex items-center justify-center overflow-hidden">
+        <img
+          src={LoginBanner}
+          alt="Login Banner"
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );

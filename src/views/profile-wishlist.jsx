@@ -5,7 +5,7 @@ export default function Profile() {
   return (
     <>
       <RightSidebar />
-      <main className="p-6"></main>
+      <main></main>
       <Wishlist />
     </>
   );

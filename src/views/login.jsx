@@ -5,7 +5,7 @@ export default function DetailProduk() {
   return (
     <>
       <Navbar />
-      <main className="p-6"></main>
+      <main></main>
       <Login />
     </>
   );
