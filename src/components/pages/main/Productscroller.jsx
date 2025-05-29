@@ -43,7 +43,7 @@ export default function Productscroller() {
   };
 
   return (
-    <div className="relative max-w-5xl mx-auto py-8 pl-5 pr-5">
+    <div className="relative max-w-6xl mx-auto py-8 px-4">
       {/* Tombol kiri */}
       <button
         onClick={() => scroll(-300)}
@@ -63,7 +63,7 @@ export default function Productscroller() {
       {/* Scrollable container */}
       <div
         ref={scroller}
-        className="overflow-x-auto hide-scrollbar"
+        className="overflow-x-auto hide-scrollbar scroll-smooth"
         style={{ padding: '0 2rem' }}
       >
         <div className="flex space-x-10">

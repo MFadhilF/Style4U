@@ -7,7 +7,7 @@ export default function RightSidebar() {
   const navigate = useNavigate(); // Hook untuk redirect
 
   return (
-    <div className="fixed right-0 top-0 h-full w-64 bg-[#CAE38D] p-6 shadow-lg flex flex-col space-y-6">
+    <div className="fixed left-0 top-0 h-full w-64 bg-[#CAE38D] p-6 shadow-lg flex flex-col space-y-6">
       {/* Logo & Header */}
       <div className="text-center">
         <img
