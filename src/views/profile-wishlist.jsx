@@ -4,9 +4,11 @@ import Wishlist from "../components/pages/profile/wishlist.jsx";
 export default function Profile() {
   return (
     <>
+    
       <RightSidebar />
-      <main></main>
-      <Wishlist />
+      <main>
+             <Wishlist />
+      </main>
     </>
   );
 }
