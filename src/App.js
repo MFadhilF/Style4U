@@ -10,6 +10,9 @@ import Homepage from "./views/homepage";
 import ProductListPage from "./views/ProductListPage";
 import Login from "./views/login.jsx";
 import Register from "./views/register.jsx";
+import Dashboard from "./views/admin/dashboard.jsx";
+import Produk from "./views/admin/produk.jsx";
+import Category from "./views/admin/category.jsx";
 
 function App() {
   return (
@@ -25,6 +28,10 @@ function App() {
         <Route path="/ProductListPage" element={<ProductListPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/*Routes Admin*/}
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/produk" element={<Produk />} />
+        <Route path="/admin/category" element={<Category />} />
       </Routes>
     </Router>
   );
