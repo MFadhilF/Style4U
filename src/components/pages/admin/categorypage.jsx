@@ -105,7 +105,7 @@ const Produk = () => {
                 <td className="py-2 px-4 border border-[#B08968]">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <button
-                      className="bg-lime-400 w-[110px] h-[40px] hover:bg-lime-500 text-white px-3 py-1 rounded font-bold text-[14px]"
+                      className="bg-green-400 w-[110px] h-[40px] hover:bg-lime-500 text-white px-3 py-1 rounded text-[14px] font-bold"
                       onClick={() => openEditModal(produk.id, produk.nama)}
                     >
                       Edit

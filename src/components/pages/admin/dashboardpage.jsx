@@ -13,7 +13,7 @@ const Dashboard = () => {
       id: 2,
       nama: "Betty Sentosa",
       produk: "Kemeja Hitam Gen Game",
-      tanggal: "3-5-2025",
+      tanggal: "03-5-2025",
       status: "Pesanan Diterima",
     },
   ];
@@ -66,17 +66,17 @@ const Dashboard = () => {
           <tbody>
             {pesananData.map((item, index) => (
               <tr key={item.id} className="border-t">
-                <td className="py-2 px-4">{index + 1}</td>
-                <td className="py-2 px-4">{item.nama}</td>
-                <td className="py-2 px-4">{item.produk}</td>
-                <td className="py-2 px-4">{item.tanggal}</td>
-                <td className="py-2 px-4">
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded text-xs">
+                <td className="py-2 px-4 border border-[#B08968]">{index + 1}</td>
+                <td className="py-2 px-4 border border-[#B08968]">{item.nama}</td>
+                <td className="py-2 px-4 border border-[#B08968]">{item.produk}</td>
+                <td className="py-2 px-4 border border-[#B08968]">{item.tanggal}</td>
+                <td className="py-2 px-4 border border-[#B08968] text-center">
+                  <button className="bg-blue-500 w-[auto] h-[40px] hover:bg-blue-600 text-white px-3 py-1 rounded text-[14px] font-bold ">
                     Selengkapnya
                   </button>
                 </td>
-                <td className="py-2 px-4">
-                  <span className="bg-green-200 text-green-800 px-3 py-1 rounded text-xs">
+                <td className="py-2 px-4 border border-[#B08968] text-center">
+                  <span className="bg-green-500 w-[auto] h-[40px] hover:bg-green-600 text-white px-3 py-1 rounded text-[14px] font-bold">
                     {item.status}
                   </span>
                 </td>
