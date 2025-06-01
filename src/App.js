@@ -13,6 +13,9 @@ import Register from "./views/register.jsx";
 import Dashboard from "./views/admin/dashboard.jsx";
 import Produk from "./views/admin/produk.jsx";
 import Category from "./views/admin/category.jsx";
+import Penjualan from "./views/admin/penjualan.jsx";
+import Pesanan from "./views/admin/pesanan.jsx";
+import Users from "./views/admin/users.jsx";
 
 function App() {
   return (
@@ -32,6 +35,9 @@ function App() {
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/produk" element={<Produk />} />
         <Route path="/admin/category" element={<Category />} />
+        <Route path="/admin/pesanan" element={<Pesanan />} />
+        <Route path="/admin/penjualan" element={<Penjualan />} />
+        <Route path="/admin/users" element={<Users />} />
       </Routes>
     </Router>
   );
