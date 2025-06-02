@@ -16,19 +16,20 @@ import Sweater from "../../assets/Sweater.png";
 
 const categories = ['all', 'vintage', 'minimalist', 'coquette', 'skena'];
 
+
 export const initialProducts = [
-  { id: 1,  name: 'Baju Vintage 90’s',  price: '70.000',  category: 'vintage',   grade: 'B', img: BajuVintage,    isFavorite: false },
-  { id: 2,  name: 'Oversize Rajut',     price: '80.000',  category: 'minimalist',grade: 'B', img: BajuRajut, isFavorite: false },
-  { id: 3,  name: 'Jaket Denim',        price: '150.000', category: 'skena',     grade: 'C', img: JaketDenim,    isFavorite: false },
-  { id: 4,  name: 'Jeans Lukis',        price: '80.000',  category: 'skena',     grade: 'A', img: JeansLukis,    isFavorite: false },
-  { id: 5,  name: 'Kemeja Bunga',       price: '50.000',  category: 'vintage',   grade: 'A', img: KemejaBunga,   isFavorite: false },
-  { id: 6,  name: 'Denim Robek',        price: '95.000',  category: 'minimalist',grade: 'A', img: DenimRobek,    isFavorite: false },
-  { id: 7,  name: 'Jaket Kulit',        price: '125.000', category: 'skena',     grade: 'A', img: JaketKulit,    isFavorite: false },
-  { id: 8,  name: 'Kaos Grafis',        price: '25.000',  category: 'coquette',  grade: 'B', img: KaosGrafis,    isFavorite: false },
-  { id: 9,  name: 'Kaos Polos',       price: '30.000',  category: 'minimalist',grade: 'B', img: KaosPolos,  isFavorite: false },
-  { id: 10, name: 'Batik',              price: '20.000',  category: 'vintage',   grade: 'B', img: Batik,         isFavorite: false },
-  { id: 11, name: 'Sweater',            price: '15.000',  category: 'minimalist',grade: 'C', img: Sweater,       isFavorite: false },
-  { id: 12, name: 'Kemeja Polos',       price: '20.000',  category: 'coquette',  grade: 'C', img: KaosPolos,  isFavorite: false },
+  { id: 1,  name: 'Baju Vintage 90’s',   price: '70.000',  category: 'vintage',    grade: 'B', img: BajuVintage,  brand: 'Zara',     gender: 'women', isFavorite: false },
+  { id: 2,  name: 'Oversize Rajut',      price: '80.000',  category: 'minimalist', grade: 'B', img: BajuRajut,    brand: 'Uniqlo',   gender: 'women', isFavorite: false },
+  { id: 3,  name: 'Jaket Denim',         price: '150.000', category: 'skena',      grade: 'C', img: JaketDenim,   brand: 'Levi\'s',  gender: 'men',   isFavorite: false },
+  { id: 4,  name: 'Jeans Lukis',         price: '80.000',  category: 'skena',      grade: 'A', img: JeansLukis,   brand: 'H&M',      gender: 'women', isFavorite: false },
+  { id: 5,  name: 'Kemeja Bunga',        price: '50.000',  category: 'vintage',    grade: 'A', img: KemejaBunga,  brand: 'Zara',     gender: 'women', isFavorite: false },
+  { id: 6,  name: 'Denim Robek',         price: '95.000',  category: 'minimalist', grade: 'A', img: DenimRobek,   brand: 'Levi\'s',  gender: 'men',   isFavorite: false },
+  { id: 7,  name: 'Jaket Kulit',         price: '125.000', category: 'skena',      grade: 'A', img: JaketKulit,   brand: 'Zara',     gender: 'men',   isFavorite: false },
+  { id: 8,  name: 'Kaos Grafis',         price: '25.000',  category: 'coquette',   grade: 'B', img: KaosGrafis,   brand: 'H&M',      gender: 'women', isFavorite: false },
+  { id: 9,  name: 'Kaos Polos',        price: '30.000',  category: 'minimalist', grade: 'B', img: KaosPolos,    brand: 'Uniqlo',   gender: 'women',   isFavorite: false },
+  { id: 10, name: 'Batik',               price: '20.000',  category: 'vintage',    grade: 'B', img: Batik,        brand: 'Uniqlo',   gender: 'men', isFavorite: false }, // Memilih Uniqlo untuk Batik dari opsi yang ada
+  { id: 11, name: 'Sweater',             price: '15.000',  category: 'minimalist', grade: 'C', img: Sweater,      brand: 'H&M',      gender: 'women', isFavorite: false },
+  { id: 12, name: 'Kemeja Polos',        price: '20.000',  category: 'coquette',   grade: 'C', img: KaosPolos,    brand: 'Zara',     gender: 'women', isFavorite: false }, // Kategori coquette, diasumsikan untuk wanita
 ];
 
 export default function ListProduct() {
@@ -64,7 +65,7 @@ export default function ListProduct() {
     <div className="p-6">
         <Banner />
       {/* FILTER TABS */}
-      <ul className="flex space-x-2 mb-6 font-playfair">
+      <ul className="flex space-x-4 mb-6 font-playfair">
         {categories.map(cat => (
           <li key={cat}>
             <button
@@ -86,9 +87,9 @@ export default function ListProduct() {
       </ul>
 
       {/* PRODUCT GRID */}
-      <div className="flex flex-wrap -mx-4 gap-y-6">
+      <div className="flex flex-wrap -mx-4 gap-y-6 ">
         {pagedProducts.map(p => (
-          <div key={p.id} className="px-6 mb-4">
+          <div key={p.id} className="px-6 mb-4 mr-2">
             <ProductCard
               product={p}
               onToggleFavorite={handleToggleFav}

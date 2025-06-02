@@ -39,7 +39,9 @@ export default function Footer() {
               {/* Metode Pembayaran */}
               <div>
                 <h3 className="text-lg font-medium mb-2">Metode Pembayaran</h3>
-                <p>Visa, Mastercard, PayPal</p>
+                <p>Transfer</p>
+                <p>Virtual Account</p>
+                <p>QRIS</p>
               </div>
             </div>
           </div>
