@@ -95,7 +95,7 @@ const Produk = () => {
           </thead>
           <tbody>
             {produkList.map((produk, index) => (
-              <tr key={produk.id} className="text-center">
+              <tr key={produk.id} className="text-left">
                 <td className="py-2 px-4 border border-[#B08968]">
                   {index + 1}
                 </td>
@@ -140,7 +140,7 @@ const Produk = () => {
             />
             <div className="flex justify-end gap-2">
               <button
-                className="bg-lime-300 hover:bg-lime-400 text-white font-bold px-4 py-2 rounded"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded"
                 onClick={handleSimpan}
               >
                 Simpan

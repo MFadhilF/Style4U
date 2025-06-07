@@ -143,7 +143,7 @@ export default function Productscroller() {
                     className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-150 ease-in-out ${
                       p.isFavorite 
                         ? 'text-red-500 fill-red-500' 
-                        : 'text-gray-400 fill-white' 
+                        : 'text-gray-400 fill-none' 
                     }`}
                   />
                 </button>

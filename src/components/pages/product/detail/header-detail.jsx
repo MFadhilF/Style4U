@@ -28,18 +28,18 @@ export default function Detail() {
             </div>
           </div>
           <div>
-            <h1 className="text-[64px] font-poppins font-medium leading-tight">
+            <h1 className="text-[50px] font-poppins font-medium leading-tight">
               Kaos Grafis Retro
             </h1>
-            <p className="mt-2 text-sm text-gray-600">Vintage</p>
+            <p className="mt-2 text-sm text-black-600 font-bold">Vintage</p>
             <div className="flex gap-4 mt-4 mb-2">
               <button className="bg-blue-600 text-white px-4 py-1 rounded shadow">
                 S
               </button>
-              <button className="bg-white px-4 py-1 rounded shadow">M</button>
-              <button className="bg-white px-4 py-1 rounded shadow">XL</button>
+              <button className="bg-white px-4 py-1 rounded shadow-lg">M</button>
+              <button className="bg-white px-4 py-1 rounded shadow-lg">XL</button>
             </div>
-            <p className="text-sm text-gray-700 mt-2 mb-4">
+            <p className="text-sm text-black-700 mt-2 mb-4">
               Pilihan terbaik untuk teman nongkrong kamu
             </p>
             <p className="text-2xl font-bold mb-6">Rp 25.000.00</p>

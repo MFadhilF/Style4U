@@ -8,7 +8,7 @@ export default function DetailProduk() {
   return (
     <>
       <Header />
-      <main>
+      <main className="p-8">
         <Detail />
         <div className="mt-10 w-full h-[2px] bg-[#000000]"></div>
         <DeskripsiDetail />

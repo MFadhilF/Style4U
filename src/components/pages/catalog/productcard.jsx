@@ -1,23 +1,12 @@
 // src/components/ProductCard.jsx
 import React from 'react';
 import { Heart } from 'lucide-react'; // Pastikan Heart diimpor dengan benar
+import { Link } from 'react-router-dom'; // Impor Link dari react-router-dom
 
-export default function ProductCard({ product, onToggleFavorite, onProductSelect }) {
-  const handleCardClick = () => {
-    console.log('Product card clicked:', product.name);
-    if (onProductSelect) {
-      onProductSelect(product.id);
-    }
-  };
-
-  const handleCardKeyDown = (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleCardClick();
-    }
-  };
-
+export default function ProductCard({ product, onToggleFavorite }) { // Menghapus onProductSelect karena Link akan menangani navigasi
   const handleFavoriteClick = (event) => {
+    // Mencegah event klik pada tombol favorit juga memicu navigasi dari Link pembungkus
+    event.preventDefault();
     event.stopPropagation();
     onToggleFavorite(product.id);
   };
@@ -30,49 +19,46 @@ export default function ProductCard({ product, onToggleFavorite, onProductSelect
     }
   };
 
+  // Path ke halaman detail produk, pastikan ini sesuai dengan definisi rute Anda
+  // Contoh: /product/1, /product/2, dll.
+  const productDetailPath = `/detailproduk/${product.id}`;
+
   return (
-    <div
-      // MENYESUAIKAN UKURAN DAN PADDING KARTU UTAMA
+    <Link
+      to={productDetailPath}
       className="
         relative flex flex-col h-full 
-        w-40 sm:w-48 md:w-56 lg:w-64 {/* Lebar responsif disamakan */}
+        w-40 sm:w-48 md:w-56 lg:w-64
         bg-white rounded-lg shadow-lg hover:shadow-xl 
-        p-3 sm:p-4 {/* Padding disamakan */}
+        p-3 sm:p-4
         overflow-hidden transition-shadow cursor-pointer group text-left
-      " // shadow-xl diganti shadow-lg agar sama, text-left ditambahkan
-      onClick={handleCardClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={handleCardKeyDown}
+      "
       aria-label={`Lihat detail untuk ${product.name}`}
+      // Tidak lagi memerlukan onClick, onKeyDown, role="button", tabIndex={0} di sini
+      // karena <Link> sudah menangani navigasi dan aksesibilitas dasar
     >
-
-
       {/* IMAGE CONTAINER */}
-      {/* Menggunakan aspect-square dan padding yang sama */}
-      <div className="relative w-full flex-shrink-0 bg-gray-100 overflow-hidden rounded-md group aspect-square flex items-center justify-center mb-2 sm:mb-3 p-2 sm:p-3"> {/* rounded-md dan padding disamakan */}
+      <div className="relative w-full flex-shrink-0 bg-gray-100 overflow-hidden rounded-md group aspect-square flex items-center justify-center mb-2 sm:mb-3 p-2 sm:p-3">
         <img
           src={product.img}
           alt={product.name}
-          // Ukuran gambar mengisi kontainer aspect-square
           className="max-w-full max-h-full object-contain rounded group-hover:scale-105 transition-transform duration-200"
-          // h-60 dihapus, akan mengikuti aspect-square dari parent
         />
-              {/* BRAND */}
-      <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[10px] sm:text-xs uppercase text-black-500 z-20">
-        {product.brand}
-      </span>
+        {/* BRAND */}
+        <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[10px] sm:text-xs uppercase text-black-500 z-20">
+          {product.brand}
+        </span>
         
         {/* FAVORITE BUTTON */}
         <button
-          onClick={handleFavoriteClick}
-          onKeyDown={handleFavoriteKeyDown}
+          onClick={handleFavoriteClick} // Tetap menggunakan handleFavoriteClick
+          onKeyDown={handleFavoriteKeyDown} // Tetap menggunakan handleFavoriteKeyDown
           className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-20 p-1 sm:p-1.5 rounded-full hover:bg-black hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
           aria-pressed={product.isFavorite}
           aria-label={product.isFavorite ? "Hapus dari favorit" : "Tambah ke favorit"}
         >
           <Heart
-            className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-150 ease-in-out ${ // Ukuran ikon disesuaikan
+            className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-150 ease-in-out ${
               product.isFavorite 
                 ? 'text-red-500 fill-red-500' 
                 : 'text-gray-500 fill-none hover:text-red-400' 
@@ -83,21 +69,21 @@ export default function ProductCard({ product, onToggleFavorite, onProductSelect
       
       {/* INFO */}
       <div className="mt-2 sm:mt-3"> 
-        <div className="flex  items-baseline">
+        <div className="flex items-baseline">
           <h3 className="font-playfair text-sm sm:text-base font-semibold text-gray-800 truncate" title={product.name}>
             {product.name}
           </h3>
           <span className="text-[10px] sm:text-xs text-gray-500 font-playfair flex-shrink-0 ml-2">{product.gender}</span>
         </div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-md sm:text-md mt-1 font-playfair"> {/* Dibuat flex-col di mobile untuk harga & grade */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-md sm:text-md mt-1 font-playfair">
           <span className="font-semibold text-gray-800">
             Rp {product.price}
           </span>
-          <span className="text-[14px] sm:text-xs text-black-400 font-playfair mt-0.5 sm:mt-0"> {/* Ukuran grade disesuaikan */}
+          <span className="text-[14px] sm:text-xs text-black-400 font-playfair mt-0.5 sm:mt-0">
             Grade {product.grade}
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

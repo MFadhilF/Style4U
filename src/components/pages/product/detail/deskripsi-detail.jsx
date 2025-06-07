@@ -7,7 +7,7 @@ const DeskripsiDetail = () => {
     <div className="p-6 bg-white w-full h-full mx-auto">
       <div className="flex border-b mb-4 justify-between px-20 bg-[#DCE7FF]">
         <button
-          className={`px-4 py-2 text-[24px] font-poppins font-semibold ${
+          className={`px-4 py-2 text-[20px] font-poppins font-semibold ${
             activeTab === "deskripsi"
               ? "border-b-2 border-blue-700"
               : "text-black"
@@ -17,7 +17,7 @@ const DeskripsiDetail = () => {
           Deskripsi
         </button>
         <button
-          className={`px-4 py-2 text-[24px] font-poppins font-semibold ${
+          className={`px-4 py-2 text-[20px] font-poppins font-semibold ${
             activeTab === "pertanyaan"
               ? "border-b-2 border-blue-700"
               : "text-black"
@@ -29,7 +29,7 @@ const DeskripsiDetail = () => {
       </div>
 
       {activeTab === "deskripsi" && (
-        <div className="text-[24px] font-poppins space-y-4">
+        <div className="text-[14px] font-poppins space-y-4">
           <p>
             <span className="font-semibold">Bahan :</span> Loose fit
           </p>
