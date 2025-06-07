@@ -52,8 +52,8 @@ const Produk = () => {
               <tr key={produk.id} className="border-t border border-[#B08968]">
                 <td className="py-2 px-4 border border-[#B08968]">{index + 1}</td>
                 <td className="py-2 px-4 border border-[#B08968]">{produk.nama}</td>
-                <td className="py-2 px-4 text-center border border-[#B08968]">{produk.stok}</td> 
-                <td className="py-2 px-4 text-center border border-[#B08968]">{produk.harga}</td>
+                <td className="py-2 px-4  text-left border border-[#B08968]">{produk.stok}</td> 
+                <td className="py-2 px-4  text-left border border-[#B08968]">{produk.harga}</td>
                 <td className="py-2 px-4 flex flex-wrap gap-2 justify-center ">
                   <button className="bg-green-400 w-[110px] h-[40px] hover:bg-lime-500 text-white px-3 py-1 rounded text-[14px] font-bold">
                     Edit

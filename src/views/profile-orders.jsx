@@ -1,12 +1,12 @@
 import RightSidebar from "../components/layouts/rightsidebar.jsx";
-import Orders from "../components/pages/profile/orders.jsx";
+import Checkout from "../components/pages/profile/checkout-page.jsx";
 
 export default function ProfileOrders() {
   return (
     <>
       <RightSidebar />
       <main></main>
-      <Orders />
+      <Checkout />
     </>
   );
 }

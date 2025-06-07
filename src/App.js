@@ -21,11 +21,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/detailproduk" element={<DetailProduk />} />
+        <Route path="/detailproduk/:productId" element={<DetailProduk />} />
         <Route path="/lebihlanjut" element={<LebihLanjut />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/wishlist" element={<Wishlist />} />
-        <Route path="/profile/orders" element={<Orders />} />
+        <Route path="/profile/Checkout" element={<Orders />} />
         {/* Tambahkan route lain di sini jika diperlukan */}
         <Route path="/" element={<Homepage />} />
         <Route path="/ProductListPage" element={<ProductListPage />} />

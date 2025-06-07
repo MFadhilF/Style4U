@@ -54,11 +54,11 @@ const Pembeli = () => {
           <tbody>
             {PembeliList.map((Pembeli, index) => (
               <tr key={Pembeli.id} className="border-t border border-[#B08968]">
-                <td className="py-2 px-4 text-center border border-[#B08968]">{index + 1}</td>
-                <td className="py-2 px-4 text-center border border-[#B08968]">{Pembeli.nama}</td>
-                <td className="py-2 px-4 text-center border border-[#B08968]">{Pembeli.pesanan}</td>
-                <td className="py-2 px-4 text-center border border-[#B08968]">{Pembeli.jumlah}</td>
-                <td className="py-2 px-4 text-center border border-[#B08968]">{Pembeli.tanggal}</td>
+                <td className="py-2 px-4 text-left border border-[#B08968]">{index + 1}</td>
+                <td className="py-2 px-4 text-left border border-[#B08968]">{Pembeli.nama}</td>
+                <td className="py-2 px-4 text-left border border-[#B08968]">{Pembeli.pesanan}</td>
+                <td className="py-2 px-4 text-left border border-[#B08968]">{Pembeli.jumlah}</td>
+                <td className="py-2 px-4 text-left border border-[#B08968]">{Pembeli.tanggal}</td>
                 <td className="py-2 px-4 flex flex-wrap gap-2 justify-center ">
                     <td className="py-2 px-4 flex gap-2 justify-center ">
                   <button className="bg-blue-500 w-[auto] h-[40px] hover:bg-blue-600 text-white px-3 py-1 rounded text-[14px] font-bold">
