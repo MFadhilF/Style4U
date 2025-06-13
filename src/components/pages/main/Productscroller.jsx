@@ -1,18 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { Heart } from 'lucide-react';
-import KaosGrafis from "../../assets/Kaosgrafis.png"; // Pastikan path ini benar
-import BajuVintage from "../../assets/Bajuvintage.png"; // Pastikan path ini benar
-import KaosPolos from "../../assets/Kaospolos.png";   // Pastikan path ini benar
-import DenimRobek from "../../assets/denimrobek.png"; // Pastikan path ini benar
+import KaosGrafis from "../../assets/Kaosgrafis.png"; 
+import BajuVintage from "../../assets/Bajuvintage.png"; 
+import KaosPolos from "../../assets/Kaospolos.png";   
+import DenimRobek from "../../assets/denimrobek.png"; 
 
-// exampleBrands dan exampleGenders tidak lagi diperlukan karena data disisipkan langsung
-// const exampleBrands = ['Zara', 'H&M', 'Uniqlo', "Levi's"];
-// const exampleGenders = ['women', 'men'];
 
 export default function Productscroller() {
   const scroller = useRef(null);
 
-  // Data produk awal DENGAN brand, gender, dan isFavorite disisipkan langsung
   const initialProductData = [
     {
       id: 1,
@@ -20,8 +16,8 @@ export default function Productscroller() {
       price: "Rp 150.000",
       grade: "Grade A",
       img: BajuVintage,
-      brand: 'Zara',     // Langsung diisi
-      gender: 'women',   // Langsung diisi
+      brand: 'Zara',     
+      gender: 'women',  
       isFavorite: false,
     },
     {
@@ -30,18 +26,18 @@ export default function Productscroller() {
       price: "Rp 72.000",
       grade: "Grade A",
       img: KaosGrafis,
-      brand: 'H&M',      // Langsung diisi
-      gender: 'men',     // Langsung diisi
-      isFavorite: true,  // Contoh satu item favorit
+      brand: 'H&M',      
+      gender: 'men',     
+      isFavorite: true, 
     },
     {
       id: 3,
       title: "Kemeja / Blouse",
       price: "Rp 72.000",
       grade: "Grade A",
-      img: KaosPolos,    // Menggunakan KaosPolos sesuai data asli Anda
-      brand: 'Uniqlo',   // Langsung diisi
-      gender: 'women',   // Langsung diisi
+      img: KaosPolos,    
+      brand: 'Uniqlo',   
+      gender: 'women',   
       isFavorite: false,
     },
     {
@@ -50,8 +46,8 @@ export default function Productscroller() {
       price: "Rp 120.000",
       grade: "Grade A",
       img: DenimRobek,
-      brand: 'Levi\'s', // Langsung diisi
-      gender: 'men',     // Langsung diisi
+      brand: 'Levi\'s', 
+      gender: 'men',     
       isFavorite: false,
     },
   ];
@@ -66,10 +62,6 @@ export default function Productscroller() {
 
   const handleCardClick = (product) => {
     console.log("Card clicked:", product.title);
-    // Misalnya, navigasi ke halaman detail produk
-    // import { useNavigate } from "react-router-dom";
-    // const navigate = useNavigate();
-    // navigate(`/produk/${product.id}`);
   };
 
   const handleToggleFavorite = (productId, event) => {
@@ -123,7 +115,7 @@ export default function Productscroller() {
             >
               <div className="relative bg-gray-100 rounded-md p-2 sm:p-3 mb-2 sm:mb-3 aspect-square flex items-center justify-center">
                 <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[9px] sm:text-[10px] uppercase text-gray-500 z-20 font-sans">
-                  {p.brand} {/* Akan menampilkan brand dari data produk */}
+                  {p.brand} 
                 </span>
                 
                 <img

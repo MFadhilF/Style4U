@@ -4,27 +4,22 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // Anda mendefinisikan 'playfair' dua kali. Cukup satu kali.
-        // Jika ingin nama alias yang berbeda, gunakan nama alias yang berbeda.
         poppins: ["Poppins", "sans-serif"],
-        playfair: ['"Playfair Display"', "serif"], // Sebaiknya gunakan kutip ganda untuk nama font yang mengandung spasi
-        // serifGaya: ['"Playfair Display"', "serif"], // Contoh jika Anda ingin alias 'serifGaya'
+        playfair: ['"Playfair Display"', "serif"], 
         anton: ["Anton", "sans-serif"],
-        impact: ["Impact", "sans-serif"], // Jika Anda punya font Impact, jika tidak, mungkin tidak perlu
+        impact: ["Impact", "sans-serif"], 
         georgia: ["Georgia", "serif"],
         roboto: ["Roboto", "sans-serif"],
       },
-      // Tambahkan di sini jika Anda ingin memperluas konfigurasi tema lainnya
-      // seperti colors, borderRadius, dll., yang dibutuhkan oleh Shadcn UI
       colors: {
-      background: 'rgb(var(--background))', // Menggunakan rgb() karena variabel kita sekarang RGB
+      background: 'rgb(var(--background))',
       foreground: 'rgb(var(--foreground))',
       card: 'rgb(var(--card))',
-      cardForeground: 'rgb(var(--card-foreground))', // Perhatikan camelCase jika komponen Shadcn menggunakan itu
+      cardForeground: 'rgb(var(--card-foreground))', 
       popover: 'rgb(var(--popover))',
       popoverForeground: 'rgb(var(--popover-foreground))',
       primary: {
-        DEFAULT: 'hsl(var(--primary))', // Ini tetap HSL
+        DEFAULT: 'hsl(var(--primary))', 
         foreground: 'hsl(var(--primary-foreground))',
       },
       secondary: {
@@ -47,12 +42,12 @@ module.exports = {
       input: 'hsl(var(--input))',
       ring: 'hsl(var(--ring))',
     },
-    borderRadius: { // Pastikan ini juga ada
+    borderRadius: { 
       lg: "var(--radius)",
       md: "calc(var(--radius) - 2px)",
       sm: "calc(var(--radius) - 4px)",
     },
-      keyframes: { // Jika Anda menggunakan komponen Shadcn UI yang memerlukan animasi
+      keyframes: { 
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -62,13 +57,13 @@ module.exports = {
           to: { height: "0" },
         },
       },
-      animation: { // Jika Anda menggunakan komponen Shadcn UI yang memerlukan animasi
+      animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
   plugins: [
-    require("tailwindcss-animate") // Plugin ini penting untuk animasi Shadcn UI
+    require("tailwindcss-animate")
   ],
 };

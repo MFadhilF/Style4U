@@ -28,7 +28,7 @@ export default function RightSidebar() {
           <span>Data Pribadi</span>
         </button>
         <button
-          onClick={() => navigate("/profile/Checkout")}
+          onClick={() => navigate("/profile/orders")}
           className="flex items-center space-x-2 cursor-pointer hover:font-semibold text-[20px] font-semibold focus:outline-none"
         >
           <ClipboardList size={20} />
