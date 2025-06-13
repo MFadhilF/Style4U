@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-  Jika Anda menggunakan plugin tailwindcss-animate yang dikonfigurasi
-  di tailwind.config.js (umum untuk Shadcn UI), baris @import di bawah ini
-  kemungkinan besar tidak diperlukan. Hapus atau komentari jika ragu.
-*/
-/* @import "tw-animate-css"; */
-
-/*
-  Jika Anda menggunakan plugin PostCSS kustom untuk @custom-variant,
-  biarkan ini. Jika tidak, atau jika ini mengganggu, hapus atau komentari.
-  Dark mode standar Shadcn UI biasanya tidak memerlukan ini.
-*/
 /* @custom-variant dark (&:is(.dark *)); */
 
 @layer base {
@@ -69,10 +57,7 @@
     font-feature-settings: "rlig" 1, "calt" 1; /* Opsional untuk tipografi yang lebih baik */
   }
 
-  /* Hindari penggunaan universal selector (*) dengan @apply secara agresif.
-     Jika Anda membutuhkan border default pada beberapa elemen, targetkan lebih spesifik
-     atau gunakan kelas Tailwind langsung pada elemen HTML.
-  */
+  
   /*
   * {
     @apply border-border;

@@ -1,8 +1,6 @@
-// src/components/layouts/Navbar.jsx (atau path yang sesuai dengan gambar Anda: src/components/layouts/navbar.jsx)
-
 import React, { useState, useEffect } from "react";
-import LogoImage from "../assets/style4u-logo.png"; // Path disesuaikan dengan struktur Anda
-import { Link, useNavigate } from "react-router-dom"; // Impor Link
+import LogoImage from "../assets/style4u-logo.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -41,21 +39,23 @@ const Navbar = () => {
     >
       {/* Logo Section */}
       <div className="flex items-center">
-        <Link to="/"> {/* Logo mengarah ke halaman utama */}
+        <Link to="/">
+          {" "}
+          {/* Logo mengarah ke halaman utama */}
           <img src={LogoImage} alt="Style4U Logo" className="h-10" />
         </Link>
       </div>
 
       {/* Navigation Links */}
       <div className="flex space-x-8 text-lg font-medium text-gray-700">
-        <Link // Mengganti <a> dengan <Link>
-          to="/productlistpage" // Ganti dengan path ke ProductListPage Anda
+        <Link
+          to="/productlistpage"
           className="hover:text-gray-900 transition-colors duration-200"
         >
           Produk
         </Link>
         <a
-          href="#brand" // Biarkan seperti ini jika "Brand" adalah section di halaman yang sama
+          onClick={() => navigate("/login")}
           className="hover:text-gray-900 transition-colors duration-200"
         >
           Brand

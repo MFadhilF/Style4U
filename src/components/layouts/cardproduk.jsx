@@ -19,7 +19,6 @@ const CardProduk = ({ produk, onToggleFavorite }) => {
     }
   };
 
-  // Path ke halaman detail produk, pastikan ini sesuai dengan definisi rute Anda
   const productDetailPath = `/detailproduk/${produk.id}`; // Sesuaikan path ini jika perlu
 
   return (
@@ -54,7 +53,6 @@ const CardProduk = ({ produk, onToggleFavorite }) => {
           aria-pressed={liked}
           aria-label={liked ? "Hapus dari favorit" : "Tambah ke favorit"}
         >
-          {/* Menggunakan ikon Heart dari Heroicons sesuai impor Anda, ukuran disamakan */}
           {liked ? (
             <HeartSolid className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
           ) : (

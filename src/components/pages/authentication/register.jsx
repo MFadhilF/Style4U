@@ -1,12 +1,48 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // untuk redirect
 import { Eye, EyeOff } from "lucide-react";
 import LogoImage from "../../../components/assets/style4u-logo.png";
 import LoginBanner from "../../../components/assets/loginbanner.png"; // pastikan file ini ada
 
 export default function RegisterPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirm: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:3001/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Registrasi gagal.");
+      } else {
+        alert("Registrasi berhasil! Silakan login.");
+        navigate("/login"); // redirect ke halaman login
+      }
+    } catch (err) {
+      setError("Terjadi kesalahan saat menghubungi server.");
+    }
+  };
   return (
     <div className="flex min-h-screen max-w-[1200px] mx-auto items-center text-center">
       {/* Kiri: Form */}
@@ -22,34 +58,40 @@ export default function RegisterPage() {
         <p className="text-[#666] mb-8 text-sm max-w-[350px]">
           Mudahkan pencarian yang kamu inginkan dengan login di Style For You
         </p>
-        <form className="w-full max-w-[400px]">
+        <form className="w-full max-w-[400px]" onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
               type="text"
+              name="name"
               placeholder="Nama"
               required
+              onChange={handleChange}
               className="w-full px-4 py-3 border border-[#ddd] rounded-full text-sm outline-none focus:border-[#a67c52]"
             />
           </div>
           <div className="mb-4">
             <input
               type="email"
+              name="email"
               placeholder="Email"
               required
+              onChange={handleChange}
               className="w-full px-4 py-3 border border-[#ddd] rounded-full text-sm outline-none focus:border-[#a67c52]"
             />
           </div>
           <div className="mb-4 relative">
             <input
               type={showPassword ? "text" : "password"}
+              name="password"
               placeholder="Password"
               required
+              onChange={handleChange}
               className="w-full px-4 py-3 border border-[#ddd] rounded-full text-sm outline-none focus:border-[#a67c52]"
             />
             <button
               type="button"
               className="absolute right-4 top-1/2 -translate-y-1/2 text-[#999]"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword(showPassword)}
             >
               {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
@@ -57,18 +99,23 @@ export default function RegisterPage() {
           <div className="mb-4 relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
+              name="password_confirm"
               placeholder="Konfirmasi Password"
               required
+              onChange={handleChange}
               className="w-full px-4 py-3 border border-[#ddd] rounded-full text-sm outline-none focus:border-[#a67c52]"
             />
             <button
               type="button"
               className="absolute right-4 top-1/2 -translate-y-1/2 text-[#999]"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() => setShowConfirmPassword(showConfirmPassword)}
             >
               {showConfirmPassword ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
           </div>
+
+          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+
           <div className="flex items-center text-sm mb-5">
             <input type="checkbox" id="terms" required className="mr-2" />
             <label htmlFor="terms">

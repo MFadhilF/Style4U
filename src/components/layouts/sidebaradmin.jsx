@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import style4ulogo from "../../components/assets/style4u-logo.png"; // Gambar ikon logo
+import React, { useState, useRef } from "react";
+import style4ulogo from "../../components/assets/style4u-logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -9,6 +9,7 @@ import {
   Tag,
   User,
   Menu,
+  LogOut,
 } from "lucide-react";
 
 const menuItems = [
@@ -25,34 +26,28 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  // State untuk toggle klik (pin sidebar)
-  const [isOpen, setIsOpen] = useState(false);
-  // State untuk deteksi hover mouse
-  const [isHovering, setIsHovering] = useState(false);
-
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    // Hapus item dari localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("id_user");
+    localStorage.removeItem("id_role");
 
-  // Fungsi untuk toggle klik
-  const toggleSidebar = () => setIsOpen(!isOpen);
+    // Arahkan pengguna ke halaman login
+    navigate("/login");
+  };
 
-  // Fungsi untuk menangani mouse enter
-  const handleMouseEnter = () => setIsHovering(true);
-
-  // Fungsi untuk menangani mouse leave
-  const handleMouseLeave = () => setIsHovering(false);
-
-  // Kondisi apakah sidebar seharusnya dalam keadaan mengembang
-  // Mengembang jika di-pin (isOpen) ATAU sedang di-hover (isHovering)
-  const isEffectivelyExpanded = isOpen || isHovering;
+  const handleNavigation = (path) => {
+    navigate(path);
+    // Tidak perlu ubah isOpen saat pindah halaman
+  };
 
   return (
     <div
-      className={`fixed top-0 left-0 h-full bg-[#f3d8bd] text-[#6e3f1c]
-        transition-all duration-300 ease-in-out
-        ${isEffectivelyExpanded ? "w-56" : "w-16"}`} // Lebar berubah berdasarkan isEffectivelyExpanded
-      onMouseEnter={handleMouseEnter} // Deteksi mouse masuk
-      onMouseLeave={handleMouseLeave} // Deteksi mouse keluar
+      className={`fixed top-0 left-0 h-full bg-[#f3d8bd] text-[#6e3f1c] 
+        transition-all duration-300 ease-in-out 
+        w-56`}
     >
       {/* Logo */}
       <div className="flex items-center justify-center h-20">
@@ -60,47 +55,53 @@ const Sidebar = () => {
           <img
             src={style4ulogo}
             alt="Style4U Logo"
-            className={`object-contain transition-all duration-300 ease-in-out ${
-              isEffectivelyExpanded ? "w-32 h-32" : "w-10 h-10" // Ukuran logo berubah
-            }`}
+            className={`object-contain transition-all duration-300 ease-in-out 
+              w-32 h-32`} // 4. Atur ukuran logo menjadi statis
           />
-          <span
-            className={`text-lg font-semibold transition-all duration-300
-              ${isEffectivelyExpanded ? "opacity-100 scale-100" : "opacity-0 scale-0"} // Teks logo muncul/hilang
-              origin-left`}
-          >
-
-          </span>
         </div>
       </div>
 
       {/* Menu */}
       <nav className="flex flex-col items-start gap-4 px-2 mt-4">
-        {menuItems.map((item, idx) => (
-          <div
-            key={idx}
-            onClick={() => navigate(item.path)} // Navigasi saat diklik
-            className={`flex items-center px-3 py-2 rounded-lg cursor-pointer
-              hover:bg-[#a1673f2d] transition-all duration-200 w-full
-              ${location.pathname === item.path ? "bg-[#a1673f] text-white" : ""}`}
-          >
-            <div className="min-w-[20px]">{item.icon}</div>
-            <span
-              className={`ml-3 transition-all duration-300 ${
-                isEffectivelyExpanded ? "opacity-100 scale-100" : "opacity-0 scale-0" // Label menu muncul/hilang
-              } whitespace-nowrap origin-left`}
+        {menuItems.map((item, idx) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <div
+              key={idx}
+              onClick={() => handleNavigation(item.path)}
+              className={`relative flex items-center h-10 px-3 py-2 w-full rounded-md cursor-pointer 
+                transition-all duration-200 
+                ${
+                  isActive
+                    ? "bg-[#6e3f1c] text-white font-semibold"
+                    : "hover:bg-[#a1673f2d]"
+                }`}
             >
-              {item.label}
-            </span>
-          </div>
-        ))}
+              <div className="min-w-[20px]">{item.icon}</div>
+              <span
+                className={`ml-3 transition-all duration-300 
+                  opacity-100 scale-100 // 5. Buat label menu selalu terlihat
+                  whitespace-nowrap origin-left`}
+              >
+                {item.label}
+              </span>
+            </div>
+          );
+        })}
       </nav>
 
-      {/* Bottom Menu Icon */}
-      <div className="absolute bottom-5 left-0 w-full flex justify-center">
-        <button onClick={toggleSidebar} aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}>
-          <Menu />
-        </button>
+      {/* Toggle Button */}
+      <div className="absolute bottom-0 left-0 w-full p-4">
+        <div
+          onClick={handleLogout}
+          className={`relative flex items-center h-10 px-3 py-2 w-full rounded-md cursor-pointer 
+            transition-all duration-200 hover:bg-[#a1673f2d]`}
+        >
+          <div className="min-w-[20px]">
+            <LogOut size={20} />
+          </div>
+          <span className="ml-3 whitespace-nowrap">Logout</span>
+        </div>
       </div>
     </div>
   );
