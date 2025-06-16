@@ -23,12 +23,10 @@ export default function LoginPage() {
 
       const { token, id_user, id_role } = res.data;
 
-      // Simpan token ke localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("id_user", id_user);
       localStorage.setItem("id_role", id_role);
 
-      // Redirect berdasarkan role
       if (id_role === 1) {
         navigate("/admin/dashboard");
       } else if (id_role === 2) {
@@ -86,12 +84,12 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-lime-400 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-lime-500 transition"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
             >
               {showPassword ? (
-                <Eye className="w-4 h-4" />
+                <EyeOff className="w-5 h-5" />
               ) : (
-                <EyeOff className="w-4 h-4" />
+                <Eye className="w-5 h-5" />
               )}
             </button>
           </div>
@@ -115,8 +113,6 @@ export default function LoginPage() {
               Daftar disini
             </a>
           </div>
-
-          {/* Divider & Social buttons, unchanged */}
         </form>
       </div>
 

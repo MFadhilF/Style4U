@@ -1,85 +1,25 @@
-import React, { useRef, useState } from 'react';
-import { Heart } from 'lucide-react';
-import KaosGrafis from "../../assets/Kaosgrafis.png"; 
-import BajuVintage from "../../assets/Bajuvintage.png"; 
-import KaosPolos from "../../assets/Kaospolos.png";   
-import DenimRobek from "../../assets/denimrobek.png"; 
+import React, { useRef } from "react";
+import { Heart } from "lucide-react";
 
+const API_BASE_URL = "http://localhost:3001";
 
-export default function Productscroller() {
+export default function ProductScroller({ products, onActionClick }) {
   const scroller = useRef(null);
-
-  const initialProductData = [
-    {
-      id: 1,
-      title: "Baju Vintage 90's",
-      price: "Rp 150.000",
-      grade: "Grade A",
-      img: BajuVintage,
-      brand: 'Zara',     
-      gender: 'women',  
-      isFavorite: false,
-    },
-    {
-      id: 2,
-      title: "Kaos American Style",
-      price: "Rp 72.000",
-      grade: "Grade A",
-      img: KaosGrafis,
-      brand: 'H&M',      
-      gender: 'men',     
-      isFavorite: true, 
-    },
-    {
-      id: 3,
-      title: "Kemeja / Blouse",
-      price: "Rp 72.000",
-      grade: "Grade A",
-      img: KaosPolos,    
-      brand: 'Uniqlo',   
-      gender: 'women',   
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      title: "Denim Robek",
-      price: "Rp 120.000",
-      grade: "Grade A",
-      img: DenimRobek,
-      brand: 'Levi\'s', 
-      gender: 'men',     
-      isFavorite: false,
-    },
-  ];
-
-  const [products, setProducts] = useState(initialProductData);
 
   const scroll = (distance) => {
     if (scroller.current) {
-      scroller.current.scrollBy({ left: distance, behavior: 'smooth' });
+      scroller.current.scrollBy({ left: distance, behavior: "smooth" });
     }
   };
 
-  const handleCardClick = (product) => {
-    console.log("Card clicked:", product.title);
+  const handleAction = (event) => {
+    if (event) event.stopPropagation();
+    onActionClick();
   };
 
-  const handleToggleFavorite = (productId, event) => {
-    event.stopPropagation(); 
-    setProducts(currentProducts =>
-      currentProducts.map(p =>
-        p.id === productId ? { ...p, isFavorite: !p.isFavorite } : p
-      )
-    );
-  };
-  
-  const handleFavoriteKeyDown = (productId, event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      event.stopPropagation();
-      handleToggleFavorite(productId, event);
-    }
-  };
+  if (!products || products.length === 0) {
+    return <div className="text-center py-10">Memuat produk...</div>;
+  }
 
   return (
     <div className="relative max-w-full sm:max-w-6xl mx-auto py-8 px-0 sm:px-4">
@@ -105,55 +45,63 @@ export default function Productscroller() {
         <div className="flex space-x-4 sm:space-x-6 md:space-x-8 py-2">
           {products.map((p) => (
             <div
-              key={p.id}
-              onClick={() => handleCardClick(p)}
+              key={p.id_produk}
+              onClick={handleAction}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(p);}}}
-              aria-label={`Lihat detail untuk ${p.title}`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleAction();
+                }
+              }}
+              aria-label={`Lihat detail untuk ${p.nama}`}
               className="relative group flex-shrink-0 w-40 sm:w-48 md:w-56 lg:w-64 bg-white rounded-lg shadow-lg hover:shadow-xl p-3 sm:p-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200 ease-in-out cursor-pointer"
             >
               <div className="relative bg-gray-100 rounded-md p-2 sm:p-3 mb-2 sm:mb-3 aspect-square flex items-center justify-center">
                 <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[9px] sm:text-[10px] uppercase text-gray-500 z-20 font-sans">
-                  {p.brand} 
+                  {p.brand_name}
                 </span>
-                
+
                 <img
-                  src={p.img}
-                  alt={p.title}
+                  src={`${API_BASE_URL}/uploads/${p.image_url}`}
+                  alt={p.nama}
                   className="max-w-full max-h-full object-contain rounded group-hover:scale-105 transition-transform duration-200"
                 />
 
                 <button
-                  onClick={(e) => handleToggleFavorite(p.id, e)}
-                  onKeyDown={(e) => handleFavoriteKeyDown(p.id, e)}
-                  className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-20 p-1 sm:p-1.5 rounded-full  transition-colors"
-                  aria-pressed={p.isFavorite}
-                  aria-label={p.isFavorite ? `Hapus ${p.title} dari favorit` : `Tambah ${p.title} ke favorit`}
+                  onClick={handleAction}
+                  className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-20 p-1 sm:p-1.5 rounded-full transition-colors"
+                  aria-label={`Tambah ${p.nama} ke favorit`}
                 >
-                  <Heart
-                    className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-150 ease-in-out ${
-                      p.isFavorite 
-                        ? 'text-red-500 fill-red-500' 
-                        : 'text-gray-400 fill-none' 
-                    }`}
-                  />
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 fill-none" />
                 </button>
               </div>
-              
+
               <div className="mt-2 sm:mt-3">
                 <div className="flex items-baseline mb-1">
-                  <h3 className="font-semibold font-playfair text-sm sm:text-base md:text-md truncate mr-2" title={p.title}> 
-                    {p.title}
+                  <h3
+                    className="font-semibold font-playfair text-sm sm:text-base md:text-md truncate mr-2"
+                    title={p.nama}
+                  >
+                    {p.nama}
                   </h3>
                   <span className="text-[10px] sm:text-xs text-gray-500 font-playfair flex-shrink-0 whitespace-nowrap">
-                    {p.gender} 
+                    {p.gender}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center text-xs sm:text-sm font-playfair mt-1">
-                  <span className="font-semibold text-gray-800">{p.price}</span>
-                  <span className="text-[10px] sm:text-xs text-gray-400 font-semibold">{p.grade}</span>
+                  <span className="font-semibold text-gray-800">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(p.harga)}
+                  </span>
+                  <span className="text-[10px] sm:text-xs text-gray-400 font-semibold">
+                    {p.nama_grade}
+                  </span>
                 </div>
               </div>
             </div>
