@@ -1,4 +1,3 @@
-// src/components/CardProduk.jsx
 import React, { useState } from "react";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
@@ -9,26 +8,25 @@ const CardProduk = ({ produk, onToggleFavorite }) => {
   const [liked, setLiked] = useState(produk.isFavorite || false); 
 
   const handleToggleLike = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); 
     
     const newLikedState = !liked;
     setLiked(newLikedState);
     if (onToggleFavorite) {
-      onToggleFavorite(produk.id, newLikedState); // Panggil callback jika ada
+      onToggleFavorite(produk.id, newLikedState);
     }
   };
 
-  const productDetailPath = `/detailproduk/${produk.id}`; // Sesuaikan path ini jika perlu
+  const productDetailPath = `/produk/${produk.id}`; 
 
   return (
-    <Link // Seluruh kartu sekarang adalah Link
+    <Link
       to={productDetailPath}
       className="
         relative flex flex-col h-full 
-        w-40 sm:w-48 md:w-56 lg:w-64 {/* Lebar responsif disamakan */}
+        w-40 sm:w-48 md:w-56 lg:w-64
         bg-white rounded-lg shadow-lg hover:shadow-xl 
-        p-3 sm:p-4 {/* Padding disamakan */}
+        p-3 sm:p-4
         overflow-hidden transition-shadow duration-300 cursor-pointer group text-left
       "
       aria-label={`Lihat detail untuk ${produk.nama}`}
@@ -41,14 +39,13 @@ const CardProduk = ({ produk, onToggleFavorite }) => {
           className="max-w-full max-h-full object-contain rounded group-hover:scale-105 transition-transform duration-200"
         />
         {/* BRAND */}
-        <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[10px] sm:text-xs uppercase text-gray-600 z-10 font-playfair"> {/* text-black-500 diubah ke text-gray-600 */}
+        <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[10px] sm:text-xs uppercase text-gray-600 z-10 font-playfair">
           {produk.brand}
         </span>
         
         {/* FAVORITE BUTTON */}
         <button
           onClick={handleToggleLike}
-          // onKeyDown juga bisa ditambahkan di sini jika diperlukan untuk aksesibilitas tombol favorit
           className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-20 p-1 sm:p-1.5 rounded-full hover:bg-black hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
           aria-pressed={liked}
           aria-label={liked ? "Hapus dari favorit" : "Tambah ke favorit"}
@@ -64,19 +61,15 @@ const CardProduk = ({ produk, onToggleFavorite }) => {
       {/* INFO */}
       <div className="mt-2 sm:mt-3"> 
         <div className="flex items-baseline">
-          {/* Menghilangkan group-hover:text-yellow-600 dari h3 */}
           <h3 className="font-playfair text-sm sm:text-base font-semibold text-gray-800 truncate transition-colors" title={produk.nama}>
             {produk.nama}
           </h3>
-          {/* Di referensi menggunakan product.gender, di sini product.kategori */}
           <span className="text-[10px] sm:text-xs text-gray-500 font-playfair flex-shrink-0 ml-2">{produk.kategori}</span>
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-md sm:text-md mt-1 font-playfair">
-          {/* Di referensi menggunakan product.price, di sini product.harga */}
           <span className="font-semibold text-gray-800">
             {produk.harga}
           </span>
-          {/* text-black-400 diubah menjadi text-gray-600 (atau warna valid lainnya) */}
           <span className="text-[14px] sm:text-xs text-gray-600 font-playfair mt-0.5 sm:mt-0">
             {produk.grade}
           </span>

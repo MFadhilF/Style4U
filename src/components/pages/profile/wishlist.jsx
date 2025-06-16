@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react"; // Mengganti dengan ikon yang konsisten
+import { ArrowLeft } from "lucide-react";
 import CardProduk from "../../layouts/cardproduk.jsx";
 
 export default function WishlistPage() {
   const navigate = useNavigate();
 
-  // State untuk menampung data dari API
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fungsi untuk mengambil data wishlist
   const fetchWishlist = async () => {
     const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
@@ -31,7 +29,6 @@ export default function WishlistPage() {
         }
       );
 
-      // Transformasi data agar sesuai dengan props yang diharapkan oleh CardProduk
       const transformedData = response.data.map((item) => ({
         id: item.id_produk,
         brand: item.brand_name,
@@ -40,7 +37,7 @@ export default function WishlistPage() {
         harga: new Intl.NumberFormat("id-ID").format(item.harga),
         grade: `Grade ${item.nama_grade}`,
         gambar: `http://localhost:3001/uploads/${item.image_url}`,
-        isFavorite: true, // Semua item di halaman wishlist pasti favorit
+        isFavorite: true,
       }));
 
       setWishlistItems(transformedData);
@@ -52,16 +49,13 @@ export default function WishlistPage() {
     }
   };
 
-  // Mengambil data saat komponen pertama kali dimuat
   useEffect(() => {
     fetchWishlist();
   }, []);
 
-  // Fungsi untuk menghapus item dari wishlist
   const handleRemoveFromWishlist = async (productId) => {
     const originalItems = [...wishlistItems];
 
-    // Optimistic UI: Hapus item dari tampilan secara langsung
     setWishlistItems((currentItems) =>
       currentItems.filter((item) => item.id !== productId)
     );
@@ -77,11 +71,9 @@ export default function WishlistPage() {
           data: { id_produk: productId },
         }
       );
-      // Jika berhasil, tidak perlu melakukan apa-apa karena UI sudah diupdate
     } catch (err) {
       console.error("Gagal menghapus dari wishlist:", err);
       alert("Gagal menghapus item dari wishlist.");
-      // Jika gagal, kembalikan item yang dihapus ke tampilan
       setWishlistItems(originalItems);
     }
   };
@@ -113,7 +105,6 @@ export default function WishlistPage() {
             <CardProduk
               key={produk.id}
               produk={produk}
-              // Saat tombol hati di CardProduk diklik, panggil fungsi remove
               onToggleFavorite={handleRemoveFromWishlist}
             />
           ))}

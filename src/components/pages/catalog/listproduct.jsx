@@ -127,10 +127,11 @@ export default function ListProduct() {
   };
 
   // filter & paginate
+  // filter & paginate
   const filtered =
     activeCatId === "all"
       ? products
-      : products.filter((p) => p.id_cat === activeCatId);
+      : products.filter((p) => Number(p.id_cat) === Number(activeCatId)); // Perbaikan di sini
 
   const totalPages = Math.ceil(filtered.length / perPage);
   const startIdx = (currentPage - 1) * perPage;

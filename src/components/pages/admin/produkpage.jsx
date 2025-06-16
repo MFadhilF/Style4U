@@ -196,9 +196,17 @@ const Produk = () => {
     setStokSizeList([{ size: "", stok: "" }]);
   };
 
-  const handleInfoClick = (produk) => {
-    setSelectedProdukInfo(produk); // Simpan data produk yang dipilih
-    setShowInfoModal(true); // Tampilkan modal info
+  const handleInfoClick = async (produk) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/api/produk/${produk.id_produk}`
+      );
+      setSelectedProdukInfo(res.data);
+      setShowInfoModal(true);
+    } catch (error) {
+      console.error("Gagal mengambil detail produk:", error);
+      alert("Tidak dapat memuat detail produk. Silakan coba lagi.");
+    }
   };
 
   return (
