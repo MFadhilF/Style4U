@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"; // Import useEffect
 import { Heart, Share2, ShoppingCart } from "lucide-react";
 import bintangBg from "../../../assets/star-bg.png";
-import axios from "axios";
+import apiClient from "../../../../api/axios"; // Sesuaikan path jika perlu
 import { useNavigate } from "react-router-dom";
 
 export default function Detail({ product }) {
@@ -15,20 +15,10 @@ export default function Detail({ product }) {
     const checkFavoriteStatus = async () => {
       const token = localStorage.getItem("token");
       const id_user = localStorage.getItem("id_user");
-
-      // Jika user tidak login atau produk tidak ada, tidak perlu lanjut
       if (!token || !id_user || !product) return;
-
       try {
-        // Ambil semua wishlist user
-        const response = await axios.get(
-          `http://localhost:3001/api/wishlist/${id_user}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        // Cek apakah ID produk ini ada di dalam daftar wishlist
+        // Langsung gunakan apiClient dengan URL relatif
+        const response = await apiClient.get(`/api/wishlist/${id_user}`);
         const isProductInWishlist = response.data.some(
           (item) => item.id_produk === product.id_produk
         );
@@ -57,21 +47,15 @@ export default function Detail({ product }) {
 
     try {
       if (wasFavorite) {
-        // Jika sudah favorit, HAPUS
-        await axios.delete(
-          `http://localhost:3001/api/wishlist/${id_user}/remove`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            data: { id_produk: product.id_produk },
-          }
-        );
+        // Menggunakan apiClient untuk DELETE
+        await apiClient.delete(`/api/wishlist/${id_user}/remove`, {
+          data: { id_produk: product.id_produk },
+        });
       } else {
-        // Jika belum, TAMBAHKAN
-        await axios.post(
-          `http://localhost:3001/api/wishlist/${id_user}/add`,
-          { id_produk: product.id_produk },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // Menggunakan apiClient untuk POST
+        await apiClient.post(`/api/wishlist/${id_user}/add`, {
+          id_produk: product.id_produk,
+        });
       }
     } catch (error) {
       console.error("Gagal update wishlist:", error);
@@ -97,25 +81,13 @@ export default function Detail({ product }) {
     }
 
     try {
-      // 2. Siapkan payload dan config header
       const payload = {
         id_produk: product.id_produk,
         quantity: quantity,
         size: selectedSize,
       };
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      // 3. Panggil endpoint BARU dan sertakan config
-      await axios.post(
-        "http://localhost:3001/api/cart/add", // <-- URL DIPERBAIKI
-        payload,
-        config // <-- TOKEN DISERTAKAN
-      );
-
+      // Langsung panggil apiClient. Header ditangani otomatis.
+      await apiClient.post("/api/cart/add", payload);
       alert(
         `${product.nama} (${selectedSize}) berhasil ditambahkan ke keranjang!`
       );
@@ -159,7 +131,7 @@ export default function Detail({ product }) {
             className="absolute w-full h-full object-cover opacity-80"
           />
           <img
-            src={`http://localhost:3001/uploads/${product.image_url}`}
+            src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${product.image_url}`}
             alt={product.nama}
             className="relative z-10 w-3/4 md:w-full max-w-[270px] h-auto object-contain drop-shadow-2xl"
           />
@@ -221,9 +193,6 @@ export default function Detail({ product }) {
               className="bg-gray-800 text-white rounded-full px-4 py-2.5 text-sm font-semibold flex items-center gap-2 hover:bg-gray-700"
             >
               <ShoppingCart size={16} /> Tambahkan ke Keranjang
-            </button>
-            <button className="bg-transparent border border-gray-800 text-gray-800 rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-gray-800 hover:text-white">
-              Beli Sekarang
             </button>
           </div>
         </div>

@@ -22,7 +22,8 @@ import Penjualan from "./views/admin/penjualan.jsx";
 import Pesanan from "./views/admin/pesanan.jsx";
 import Users from "./views/admin/users.jsx";
 import HasilPencarian from "./views/hasilpencarian.jsx";
-import CheckoutPage from "./components/pages/profile/checkout-page"; // Impor halaman checkout
+import CheckoutPage from "./components/pages/profile/checkout-page";
+import LandingPage from "./views/LandingPage";
 
 // Komponen proteksi untuk route private
 function RequireAuth({ children }) {
@@ -59,14 +60,7 @@ function App() {
         />
 
         {/* Private routes */}
-        <Route
-          path="/"
-          element={
-            <PublicRoute>
-              <Homepage />
-            </PublicRoute>
-          }
-        />
+        <Route path="/" element={<LandingPage />} />
         <Route
           path="/ProductListPage"
           element={

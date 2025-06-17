@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 import { Heart } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:3001";
-
 export default function ProductScroller({ products, onActionClick }) {
   const scroller = useRef(null);
 
@@ -62,9 +60,8 @@ export default function ProductScroller({ products, onActionClick }) {
                 <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 text-[9px] sm:text-[10px] uppercase text-gray-500 z-20 font-sans">
                   {p.brand_name}
                 </span>
-
                 <img
-                  src={`${API_BASE_URL}/uploads/${p.image_url}`}
+                  src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`}
                   alt={p.nama}
                   className="max-w-full max-h-full object-contain rounded group-hover:scale-105 transition-transform duration-200"
                 />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import CardProduk from "../../layouts/cardproduk.jsx";
@@ -12,22 +12,15 @@ export default function WishlistPage() {
   const [error, setError] = useState("");
 
   const fetchWishlist = async () => {
-    const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
-
-    if (!token || !id_user) {
+    if (!localStorage.getItem("token") || !id_user) {
       navigate("/login");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:3001/api/wishlist/${id_user}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await apiClient.get(`/api/wishlist/${id_user}`);
 
       const transformedData = response.data.map((item) => ({
         id: item.id_produk,
@@ -36,7 +29,7 @@ export default function WishlistPage() {
         kategori: item.category_name,
         harga: new Intl.NumberFormat("id-ID").format(item.harga),
         grade: `Grade ${item.nama_grade}`,
-        gambar: `http://localhost:3001/uploads/${item.image_url}`,
+        gambar: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image_url}`,
         isFavorite: true,
       }));
 
@@ -55,22 +48,16 @@ export default function WishlistPage() {
 
   const handleRemoveFromWishlist = async (productId) => {
     const originalItems = [...wishlistItems];
-
     setWishlistItems((currentItems) =>
       currentItems.filter((item) => item.id !== productId)
     );
 
-    const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
 
     try {
-      await axios.delete(
-        `http://localhost:3001/api/wishlist/${id_user}/remove`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          data: { id_produk: productId },
-        }
-      );
+      await apiClient.delete(`/api/wishlist/${id_user}/remove`, {
+        data: { id_produk: productId },
+      });
     } catch (err) {
       console.error("Gagal menghapus dari wishlist:", err);
       alert("Gagal menghapus item dari wishlist.");

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useRef } from "react";
+import apiClient from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { Pencil, ArrowLeft, Trash2, Edit } from "lucide-react";
 
-// Komponen Modal Alamat (bisa diletakkan di file terpisah seperti AddressModal.jsx)
 const AddressModal = ({ isOpen, onClose, onSave, initialData }) => {
   const [addressData, setAddressData] = useState({
     label_alamat: "",
@@ -124,7 +123,6 @@ const AddressModal = ({ isOpen, onClose, onSave, initialData }) => {
   );
 };
 
-// Komponen InputField untuk data pribadi
 const InputField = ({ label, name, value, onChange, ...props }) => (
   <div>
     <label
@@ -142,16 +140,16 @@ const InputField = ({ label, name, value, onChange, ...props }) => (
         className="w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-lime-500 focus:border-lime-500 text-sm sm:text-base pr-10"
         {...props}
       />
-      {name !== "email" && (
+      {name !== "email" && !props.readOnly && (
         <Pencil className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
       )}
     </div>
   </div>
 );
 
-// Komponen Halaman Utama Data Pribadi
 export default function DataPribadi() {
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const [profileData, setProfileData] = useState({
     username: "",
@@ -159,7 +157,12 @@ export default function DataPribadi() {
     email: "",
     no_handphone: "",
     jenis_kelamin: "",
+    foto_profil: null,
   });
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+
   const [addresses, setAddresses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -177,12 +180,8 @@ export default function DataPribadi() {
     setLoading(true);
     try {
       const [profileRes, addressesRes] = await Promise.all([
-        axios.get(`http://localhost:3001/api/user/${id_user}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`http://localhost:3001/api/addresses/${id_user}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        apiClient.get(`/api/user/${id_user}`),
+        apiClient.get(`/api/addresses/${id_user}`),
       ]);
       setProfileData(profileRes.data);
       setAddresses(addressesRes.data);
@@ -196,7 +195,7 @@ export default function DataPribadi() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
@@ -205,16 +204,9 @@ export default function DataPribadi() {
   const handleSubmitProfile = async (e) => {
     e.preventDefault();
     setError("");
-    const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
     try {
-      const response = await axios.put(
-        `http://localhost:3001/api/user/${id_user}`,
-        profileData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await apiClient.put(`/api/user/${id_user}`, profileData);
       alert(response.data.message || "Profil berhasil diperbarui!");
     } catch (err) {
       setError(err.response?.data?.message || "Gagal memperbarui profil.");
@@ -230,12 +222,8 @@ export default function DataPribadi() {
   const handleDeleteAddress = async (id_address) => {
     if (!window.confirm("Apakah Anda yakin ingin menghapus alamat ini?"))
       return;
-
-    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:3001/api/addresses/${id_address}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await apiClient.delete(`/api/addresses/${id_address}`);
       fetchData();
     } catch (err) {
       console.error("Gagal hapus alamat:", err);
@@ -244,26 +232,15 @@ export default function DataPribadi() {
   };
 
   const handleSaveAddress = async (addressData) => {
-    const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
-
     try {
       if (editingAddress) {
-        await axios.put(
-          `http://localhost:3001/api/addresses/${editingAddress.id_address}`,
-          addressData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+        await apiClient.put(
+          `/api/addresses/${editingAddress.id_address}`,
+          addressData
         );
       } else {
-        await axios.post(
-          `http://localhost:3001/api/addresses/${id_user}`,
-          addressData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await apiClient.post(`/api/addresses/${id_user}`, addressData);
       }
       setIsModalOpen(false);
       fetchData();
@@ -273,8 +250,46 @@ export default function DataPribadi() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const triggerFileSelect = () => fileInputRef.current.click();
+
+  const handleImageUpload = async () => {
+    if (!selectedImage) return;
+    const id_user = localStorage.getItem("id_user");
+    const formData = new FormData();
+    formData.append("profile_picture", selectedImage);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      const response = await apiClient.put(
+        `/api/user/${id_user}/picture`,
+        formData,
+        config
+      );
+      alert(response.data.message);
+      setSelectedImage(null);
+      setImagePreview("");
+      fetchData();
+    } catch (err) {
+      console.error("Gagal upload foto profil:", err);
+      alert(err.response?.data?.message || "Gagal mengunggah foto profil.");
+    }
+  };
+
   if (loading)
     return <div className="p-8 text-center">Memuat data profil...</div>;
+  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
 
   return (
     <>
@@ -310,7 +325,6 @@ export default function DataPribadi() {
                 label="Email"
                 name="email"
                 value={profileData.email}
-                onChange={handleChange}
                 readOnly
               />
               <InputField
@@ -320,10 +334,9 @@ export default function DataPribadi() {
                 value={profileData.no_handphone}
                 onChange={handleChange}
               />
-              {/* Anda bisa menambahkan input Jenis Kelamin di sini jika ingin menyimpannya bersama data pribadi */}
               <button
                 type="submit"
-                className="mt-6 bg-lime-500 text-white px-6 py-2 rounded-md hover:bg-lime-600 font-medium"
+                className="bg-lime-500 text-white px-6 py-2 rounded-md hover:bg-lime-600 font-medium"
               >
                 Simpan Data Pribadi
               </button>
@@ -332,7 +345,6 @@ export default function DataPribadi() {
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-gray-800 pt-6 border-t">
               Alamat Saya
             </h2>
-
             <div className="space-y-4">
               {addresses.map((addr) => (
                 <div
@@ -376,7 +388,6 @@ export default function DataPribadi() {
                 </div>
               ))}
             </div>
-
             <button
               type="button"
               onClick={() => handleOpenModal(null)}
@@ -384,7 +395,6 @@ export default function DataPribadi() {
             >
               <span>+ Alamat Tambahan</span>
             </button>
-
             {error && <p className="text-red-500 text-sm my-4">{error}</p>}
           </div>
 
@@ -394,25 +404,53 @@ export default function DataPribadi() {
             </h2>
             <div className="relative mb-3">
               <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
+                src={
+                  imagePreview ||
+                  (profileData.foto_profil
+                    ? `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${profileData.foto_profil}`
+                    : "https://via.placeholder.com/150/e4c9a3/8c8c8c?text=No+Image")
+                }
                 alt="Foto Profil"
                 className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#e4c9a3] object-cover shadow-lg"
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className="hidden"
+                accept="image/*"
               />
               <button
                 type="button"
                 aria-label="Ubah foto profil"
+                onClick={triggerFileSelect}
                 className="absolute bottom-1 right-1 w-7 h-7 text-gray-700 bg-white rounded-full p-1 shadow hover:bg-gray-100 flex items-center justify-center"
               >
                 <Pencil className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-gray-600 w-full max-w-xs mx-auto md:mx-0">
-              Gunakan gambar persegi beresolusi tinggi maksimal 1MB
+            {selectedImage && (
+              <div className="w-full text-center md:text-left mt-2">
+                <button
+                  onClick={handleImageUpload}
+                  className="bg-blue-600 text-white px-4 py-2 text-sm rounded-md hover:bg-blue-700"
+                >
+                  Simpan Foto
+                </button>
+                <p
+                  className="text-xs text-gray-500 mt-2 truncate"
+                  title={selectedImage.name}
+                >
+                  File: {selectedImage.name}
+                </p>
+              </div>
+            )}
+            <p className="text-xs text-gray-600 w-full max-w-xs mx-auto md:mx-0 mt-2">
+              Gunakan gambar persegi maks. 1MB
             </p>
           </div>
         </div>
       </div>
-
       <AddressModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

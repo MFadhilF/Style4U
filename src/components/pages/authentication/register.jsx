@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import LogoImage from "../../../components/assets/style4u-logo.png";
 import LoginBanner from "../../../components/assets/loginbanner.png";
+import apiClient from "../../../api/axios";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -24,23 +25,19 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
+    if (formData.password !== formData.password_confirm) {
+      setError("Password dan konfirmasi password tidak cocok!");
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:3001/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiClient.post("/api/register", formData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Registrasi gagal.");
-      } else {
-        alert("Registrasi berhasil! Silakan login.");
-        navigate("/login");
-      }
+      alert(response.data.message || "Registrasi berhasil! Silakan login.");
+      navigate("/login");
     } catch (err) {
-      setError("Terjadi kesalahan saat menghubungi server.");
+      setError(err.response?.data?.message || "Registrasi gagal.");
+      console.error("Gagal registrasi:", err);
     }
   };
   return (

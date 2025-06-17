@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../api/axios";
 import { Plus, Minus, ChevronLeft } from "lucide-react";
 
 const FilterSection = ({ title, children }) => (
@@ -19,14 +19,17 @@ export default function SidebarFilter({ filters, onFilterChange }) {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/brands")
-      .then((response) => {
+    const fetchBrands = async () => {
+      try {
+        // Gunakan apiClient dengan URL relatif
+        const response = await apiClient.get("/api/brands");
         setBrands(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Gagal mengambil daftar brand:", error);
-      });
+      }
+    };
+
+    fetchBrands();
   }, []);
 
   const handleInputChange = (e) => {

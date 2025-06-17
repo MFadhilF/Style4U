@@ -47,9 +47,12 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-md bg-white">
         {/* Kiri: Logo */}
-        <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate("/productlistpage")}
+          className="flex items-center gap-3"
+        >
           <img src={style4ulogo} alt="Logo" className="h-10 w-auto" />
-        </div>
+        </button>
 
         {/* Tengah: Search bar */}
         <form onSubmit={handleSearch} className="relative w-1/2 max-w-xl">

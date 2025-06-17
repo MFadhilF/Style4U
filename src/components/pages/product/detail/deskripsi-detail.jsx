@@ -1,9 +1,5 @@
-// components/pages/product/detail/deskripsi-detail.jsx (VERSI FINAL)
-
 import React, { useState } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
-
-// Data untuk FAQ, bisa Anda pindahkan ke file lain jika perlu
 const faqData = [
   {
     id: "q1",

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../api/axios";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-// Helper ini tidak lagi diperlukan di sini karena id_user diambil dari token
-// const getUserId = () => localStorage.getItem("id_user");
 
 export default function Cart({ show, onClose }) {
   const navigate = useNavigate();
@@ -15,24 +12,17 @@ export default function Cart({ show, onClose }) {
   const fetchCartItems = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      console.log("Token tidak ditemukan, user belum login.");
       setLoading(false);
       return;
     }
 
-    // Buat config header dengan token otorisasi
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-
     try {
       setLoading(true);
-      // Panggil endpoint baru yang lebih aman
-      const res = await axios.get("http://localhost:3001/api/cart", config);
+      // Langsung panggil apiClient, tanpa config manual.
+      const res = await apiClient.get("/api/cart");
       setCartItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil item keranjang:", error);
-      // Jika token salah/kadaluwarsa, error 401/403 akan ditangkap di sini
     } finally {
       setLoading(false);
     }
@@ -50,13 +40,13 @@ export default function Cart({ show, onClose }) {
       return alert("Sesi Anda telah berakhir, silakan login kembali.");
 
     try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        data: data, // 'data' digunakan khusus untuk method 'delete'
-      };
+      if (method === "put" || method === "post") {
+        await apiClient[method](url, data);
+      } else if (method === "delete") {
+        await apiClient.delete(url, { data: data });
+      }
 
-      await axios[method](url, data, config);
-      fetchCartItems(); // Muat ulang data keranjang setelah aksi berhasil
+      fetchCartItems();
     } catch (error) {
       console.error(`Gagal melakukan aksi ${method} pada ${url}:`, error);
       alert(`Gagal memperbarui keranjang.`);
@@ -65,7 +55,7 @@ export default function Cart({ show, onClose }) {
 
   // Fungsi untuk UPDATE kuantitas item
   const handleUpdateQuantity = (item, newQuantity) => {
-    handleApiRequest("put", "http://localhost:3001/api/cart/update", {
+    handleApiRequest("put", "/api/cart/update", {
       id_produk: item.id_produk,
       size: item.size,
       quantity: newQuantity,
@@ -74,20 +64,13 @@ export default function Cart({ show, onClose }) {
 
   // Fungsi untuk MENGHAPUS item
   const handleRemoveItem = async (id_produk, size) => {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Sesi Anda berakhir, silakan login kembali.");
     if (!window.confirm(`Hapus item ini (${size}) dari keranjang?`)) return;
 
     try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
       const body = { id_produk, size };
+      await apiClient.post("/api/cart/remove", body);
 
-      // UBAH DARI axios.delete MENJADI axios.post
-      await axios.post("http://localhost:3001/api/cart/remove", body, config); // <-- PERUBAHAN DI SINI
-
-      fetchCartItems(); // Muat ulang data keranjang
+      fetchCartItems();
     } catch (error) {
       console.error("Gagal menghapus item:", error);
       alert("Gagal menghapus item.");
@@ -95,11 +78,6 @@ export default function Cart({ show, onClose }) {
   };
 
   // Fungsi untuk PROSES PESANAN
-  const handleCheckout = () => {
-    if (cartItems.length === 0) return;
-    // Kirim data item keranjang ke halaman checkout via state
-    navigate("/checkout", { state: { checkoutItems: cartItems } });
-  };
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -139,7 +117,7 @@ export default function Cart({ show, onClose }) {
                   className="flex gap-4 items-center p-2 border-b border-gray-200"
                 >
                   <img
-                    src={`http://localhost:3001/uploads/${item.image}`}
+                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image}`}
                     alt={item.name}
                     className="w-20 h-24 object-cover rounded-md"
                   />
@@ -203,7 +181,9 @@ export default function Cart({ show, onClose }) {
               </span>
             </div>
             <button
-              onClick={handleCheckout}
+              onClick={() => {
+                navigate("/profile/orders");
+              }}
               className="w-full bg-yellow-400 text-black text-center font-bold py-3 text-sm rounded-lg hover:bg-yellow-500 transition-colors"
             >
               PROSES PESANAN

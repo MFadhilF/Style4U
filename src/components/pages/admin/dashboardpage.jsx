@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Eye, X } from "lucide-react";
+import apiClient from "../../../api/axios";
+import { X } from "lucide-react";
 
 const DetailField = ({ label, value }) => (
   <div>
@@ -37,11 +37,10 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const config = { headers: { Authorization: `Bearer ${token}` } };
+        // Tidak perlu token & config. Cukup panggil apiClient dengan URL relatif.
         const [statsRes, ordersRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/admin/dashboard/stats", config),
-          axios.get("http://localhost:3001/api/admin/orders", config),
+          apiClient.get("/api/admin/dashboard/stats"),
+          apiClient.get("/api/admin/orders"),
         ]);
 
         setStats(statsRes.data);
@@ -136,7 +135,7 @@ const Dashboard = () => {
                 </label>
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   <img
-                    src={`http://localhost:3001/uploads/${selectedOrder.items[0].image_url}`}
+                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
                     alt={selectedOrder.items[0].product_name}
                     className="max-h-60 rounded"
                   />
@@ -149,7 +148,7 @@ const Dashboard = () => {
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   {selectedOrder.payment_proof_image ? (
                     <img
-                      src={`http://localhost:3001${selectedOrder.payment_proof_image}`}
+                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
                       alt="Bukti Pembayaran"
                       className="max-h-60 rounded"
                     />

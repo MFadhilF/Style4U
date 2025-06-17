@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import ProductCard from "./productcard.jsx";
 import Banner from "./banner.jsx";
 
@@ -16,24 +16,16 @@ export default function ListProduct() {
         const token = localStorage.getItem("token");
         const id_user = localStorage.getItem("id_user");
 
-        // Ambil data produk dan kategori
         const [produkRes, categoryRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/produk"),
-          axios.get("http://localhost:3001/api/category"),
+          apiClient.get("/api/produk"), // baseURL otomatis ditambahkan
+          apiClient.get("/api/category"),
         ]);
 
-        let wishlistIds = new Set(); // Buat Set kosong sebagai default
+        let wishlistIds = new Set();
 
-        // Jika user sudah login, ambil data wishlistnya
         if (token && id_user) {
           try {
-            const wishlistRes = await axios.get(
-              `http://localhost:3001/api/wishlist/${id_user}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            // Buat Set dari ID produk di wishlist untuk pencarian cepat
+            const wishlistRes = await apiClient.get(`/api/wishlist/${id_user}`);
             wishlistIds = new Set(
               wishlistRes.data.map((item) => item.id_produk)
             );
@@ -42,11 +34,9 @@ export default function ListProduct() {
               "Gagal mengambil data wishlist, mungkin user belum punya wishlist.",
               wishlistError
             );
-            // Biarkan wishlistIds kosong jika gagal
           }
         }
 
-        // Transformasi data produk sambil mengecek status favorit
         const transformedProducts = produkRes.data.map((p) => ({
           id: p.id_produk,
           id_cat: p.id_cat,
@@ -54,10 +44,9 @@ export default function ListProduct() {
           price: new Intl.NumberFormat("id-ID").format(p.harga),
           category: p.category_name || "Uncategorized",
           grade: p.nama_grade,
-          img: `http://localhost:3001/uploads/${p.image_url}`,
+          img: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`,
           brand: p.brand_name,
           gender: p.gender || "Unisex",
-          // Tentukan status favorit dengan mengecek ke wishlistIds
           isFavorite: wishlistIds.has(p.id_produk),
         }));
 
@@ -71,52 +60,40 @@ export default function ListProduct() {
     fetchInitialData();
   }, []);
 
-  // toggle favorite
   const handleToggleFav = async (productId) => {
     const token = localStorage.getItem("token");
     const id_user = localStorage.getItem("id_user");
 
-    // 1. Cek apakah user sudah login
     if (!token || !id_user) {
       alert("Anda harus login untuk menggunakan fitur wishlist.");
       return;
     }
 
-    // 2. Simpan state asli untuk jaga-jaga jika API gagal
     const originalProducts = [...products];
 
-    // 3. Optimistic UI: Langsung update tampilan seolah-olah berhasil
     setProducts((prevProducts) =>
       prevProducts.map((p) =>
         p.id === productId ? { ...p, isFavorite: !p.isFavorite } : p
       )
     );
 
-    // Cari tahu status favorit produk sebelum di-toggle
     const productToToggle = originalProducts.find((p) => p.id === productId);
     const wasFavorite = productToToggle.isFavorite;
 
     try {
-      // 4. Kirim request ke API
       if (wasFavorite) {
-        // Jika sebelumnya sudah favorit, maka HAPUS dari wishlist
-        await axios.delete(
-          `http://localhost:3001/api/wishlist/${id_user}/remove`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            data: { id_produk: productId }, // Kirim id_produk di body untuk DELETE
-          }
-        );
+        await apiClient.delete(`/api/wishlist/${id_user}/remove`, {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { id_produk: productId },
+        });
       } else {
-        // Jika belum favorit, maka TAMBAHKAN ke wishlist
-        await axios.post(
-          `http://localhost:3001/api/wishlist/${id_user}/add`,
-          { id_produk: productId }, // Kirim id_produk di body untuk POST
+        await apiClient.post(
+          `/api/wishlist/${id_user}/add`,
+          { id_produk: productId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
     } catch (error) {
-      // 5. Jika API gagal, kembalikan tampilan ke state semula dan beri notifikasi
       console.error("Gagal update wishlist:", error);
       alert(
         error.response?.data?.message ||
@@ -126,12 +103,10 @@ export default function ListProduct() {
     }
   };
 
-  // filter & paginate
-  // filter & paginate
   const filtered =
     activeCatId === "all"
       ? products
-      : products.filter((p) => Number(p.id_cat) === Number(activeCatId)); // Perbaikan di sini
+      : products.filter((p) => Number(p.id_cat) === Number(activeCatId));
 
   const totalPages = Math.ceil(filtered.length / perPage);
   const startIdx = (currentPage - 1) * perPage;
@@ -147,7 +122,6 @@ export default function ListProduct() {
       <Banner />
       {/* FILTER TABS */}
       <ul className="flex flex-wrap gap-2 mb-6 font-playfair">
-        {/* Tombol "Semua" dibuat manual */}
         <li>
           <button
             onClick={() => {
@@ -169,7 +143,7 @@ export default function ListProduct() {
           <li key={cat.id}>
             <button
               onClick={() => {
-                setActiveCatId(cat.id); // Set ID kategori sebagai filter aktif
+                setActiveCatId(cat.id);
                 setCurrentPage(1);
               }}
               className={`px-4 py-2 rounded-full border hover:bg-gray-100 focus:outline-none transition ${

@@ -14,5 +14,5 @@ export function RequireAuth({ children }) {
 
 export function PublicRoute({ children }) {
   const token = localStorage.getItem("token");
-  return token ? <Navigate to="/" replace /> : children;
+  return token ? <Navigate to="/productlistpage" replace /> : children;
 }

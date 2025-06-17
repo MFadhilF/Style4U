@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 
 const Users = () => {
   const [showModal, setShowModal] = useState(false);
@@ -18,12 +18,7 @@ const Users = () => {
 
   const fetchAdmins = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3001/api/admins", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await apiClient.get("/api/admins");
       setAdminList(res.data);
     } catch (error) {
       console.error(
@@ -61,21 +56,14 @@ const Users = () => {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        "http://localhost:3001/api/register/admin",
-        {
-          name: nama,
-          email,
-          password,
-          password_confirm: confirmPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const payload = {
+        name: formData.nama,
+        email: formData.email,
+        password: formData.password,
+        password_confirm: formData.confirmPassword,
+      };
+
+      const res = await apiClient.post("/api/register/admin", payload);
 
       alert(res.data.message || "Admin berhasil ditambahkan!");
       setShowModal(false);

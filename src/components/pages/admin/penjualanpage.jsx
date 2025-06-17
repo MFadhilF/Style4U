@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Eye, X } from "lucide-react";
+import apiClient from "../../../api/axios";
+import { X } from "lucide-react";
 
 const DetailField = ({ label, value }) => (
   <div>
@@ -31,14 +31,7 @@ const PenjualanPage = () => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      // Mengambil SEMUA pesanan dari endpoint /admin/orders
-      const response = await axios.get(
-        "http://localhost:3001/api/admin/orders",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await apiClient.get("/api/admin/orders");
       setSales(response.data);
     } catch (err) {
       setError("Gagal mengambil riwayat penjualan.");
@@ -138,7 +131,7 @@ const PenjualanPage = () => {
                 </label>
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   <img
-                    src={`http://localhost:3001/uploads/${selectedOrder.items[0].image_url}`}
+                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
                     alt={selectedOrder.items[0].product_name}
                     className="max-h-60 rounded"
                   />
@@ -151,7 +144,7 @@ const PenjualanPage = () => {
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   {selectedOrder.payment_proof_image ? (
                     <img
-                      src={`http://localhost:3001${selectedOrder.payment_proof_image}`}
+                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
                       alt="Bukti Pembayaran"
                       className="max-h-60 rounded"
                     />

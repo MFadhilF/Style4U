@@ -1,9 +1,5 @@
-// rekomendasi-detail.jsx (Versi Final Dinamis)
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-// 1. Impor ProductCard yang sudah ada
+import apiClient from "../../../../api/axios";
 import ProductCard from "../../catalog/productcard.jsx";
 
 import shopsustain from "../../../assets/shop-sustain.png";
@@ -19,21 +15,16 @@ const RekomendasiDetail = () => {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        // Ambil data produk
-        const produkRes = await axios.get("http://localhost:3001/api/produk");
+        // 1. Gunakan apiClient untuk mengambil produk
+        const produkRes = await apiClient.get("/api/produk");
 
-        // Ambil data wishlist user jika login
         const token = localStorage.getItem("token");
         const id_user = localStorage.getItem("id_user");
         let wishlistIds = new Set();
         if (token && id_user) {
           try {
-            const wishlistRes = await axios.get(
-              `http://localhost:3001/api/wishlist/${id_user}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
+            // 2. Gunakan apiClient untuk mengambil wishlist
+            const wishlistRes = await apiClient.get(`/api/wishlist/${id_user}`);
             wishlistIds = new Set(
               wishlistRes.data.map((item) => item.id_produk)
             );
@@ -45,11 +36,11 @@ const RekomendasiDetail = () => {
           }
         }
 
-        // 4. "Terjemahkan" data agar cocok dengan ProductCard
         const translatedProducts = produkRes.data.map((p) => ({
           id: p.id_produk,
           name: p.nama,
-          img: `http://localhost:3001/uploads/${p.image_url}`,
+          // 3. Gunakan variabel .env untuk URL gambar
+          img: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`,
           brand: p.brand_name,
           price: (p.harga || 0).toLocaleString("id-ID"),
           grade: p.nama_grade,
@@ -57,7 +48,6 @@ const RekomendasiDetail = () => {
           isFavorite: wishlistIds.has(p.id_produk),
         }));
 
-        // 5. Ambil beberapa produk saja sebagai rekomendasi (misal: 4 produk pertama)
         setProducts(translatedProducts.slice(0, 4));
       } catch (error) {
         console.error("Gagal mengambil data rekomendasi:", error);
@@ -67,7 +57,7 @@ const RekomendasiDetail = () => {
     };
 
     fetchRecommendations();
-  }, []); // Array kosong berarti hanya berjalan sekali
+  }, []);
 
   // 6. Logika untuk handle wishlist (mirip seperti di ListProduct)
   const handleToggleFavorite = async (productId) => {
@@ -89,16 +79,15 @@ const RekomendasiDetail = () => {
     const wasFavorite = productToToggle.isFavorite;
 
     try {
-      const url = `http://localhost:3001/api/wishlist/${id_user}/${
-        wasFavorite ? "remove" : "add"
-      }`;
-      const method = wasFavorite ? "delete" : "post";
-      await axios({
-        method: method,
-        url: url,
-        data: { id_produk: productId },
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (wasFavorite) {
+        await apiClient.delete(`/api/wishlist/${id_user}/remove`, {
+          data: { id_produk: productId },
+        });
+      } else {
+        await apiClient.post(`/api/wishlist/${id_user}/add`, {
+          id_produk: productId,
+        });
+      }
     } catch (error) {
       console.error("Gagal update wishlist:", error);
       alert(error.response?.data?.message || "Gagal memperbarui wishlist.");

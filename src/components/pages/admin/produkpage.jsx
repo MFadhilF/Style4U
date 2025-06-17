@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { Plus, ImagePlus } from "lucide-react";
 
 const Produk = () => {
@@ -33,7 +33,7 @@ const Produk = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/category");
+      const res = await apiClient.get("/api/category");
 
       setCategories(res.data);
     } catch (error) {
@@ -43,7 +43,7 @@ const Produk = () => {
 
   const fetchGrades = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/grades");
+      const res = await apiClient.get("/api/grades");
       setGrades(res.data);
     } catch (error) {
       console.error("Gagal mengambil data grade:", error);
@@ -52,8 +52,8 @@ const Produk = () => {
 
   const fetchBrands = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/brands");
-      console.log("Brands data:", res.data); // <-- Tambahkan ini
+      const res = await apiClient.get("/api/brands");
+      console.log("Brands data:", res.data);
       setBrands(res.data);
     } catch (error) {
       console.error("Gagal mengambil data Brand:", error);
@@ -78,7 +78,7 @@ const Produk = () => {
 
   const fetchProduk = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/produk");
+      const res = await apiClient.get("/api/produk");
       setProdukList(res.data);
     } catch (error) {
       console.error("Gagal mengambil data produk:", error);
@@ -118,19 +118,15 @@ const Produk = () => {
     }
 
     try {
+      const config = { headers: { "Content-Type": "multipart/form-data" } };
+
       if (editingProdukId) {
-        await axios.put(
-          `http://localhost:3001/api/produk/${editingProdukId}`,
-          data,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        // Gunakan apiClient, URL relatif, dan config
+        await apiClient.put(`/api/produk/${editingProdukId}`, data, config);
         alert("Produk berhasil diperbarui!");
       } else {
-        await axios.post("http://localhost:3001/api/produk", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        // Gunakan apiClient, URL relatif, dan config
+        await apiClient.post("/api/produk", data, config);
         alert("Produk berhasil ditambahkan!");
       }
 
@@ -149,7 +145,7 @@ const Produk = () => {
 
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3001/api/produk/${id_produk}`);
+        await apiClient.delete(`/api/produk/${id_produk}`);
         alert("Produk berhasil dihapus!");
         fetchProduk();
       } catch (error) {
@@ -198,9 +194,7 @@ const Produk = () => {
 
   const handleInfoClick = async (produk) => {
     try {
-      const res = await axios.get(
-        `http://localhost:3001/api/produk/${produk.id_produk}`
-      );
+      const res = await apiClient.get(`/api/produk/${produk.id_produk}`);
       setSelectedProdukInfo(res.data);
       setShowInfoModal(true);
     } catch (error) {
@@ -424,7 +418,7 @@ const Produk = () => {
                 </label>
                 {selectedProdukInfo.image_url ? (
                   <img
-                    src={`http://localhost:3001/uploads/${selectedProdukInfo.image_url}`}
+                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedProdukInfo.image_url}`}
                     alt={selectedProdukInfo.nama}
                     className="w-full h-auto object-cover rounded-lg border"
                   />
@@ -562,8 +556,16 @@ const Produk = () => {
                   {/* 3. Menampilkan nama produk, bukan deskripsi */}
                   <td className="py-2 px-4">{produk.nama}</td>
                   {/* 4. Menampilkan total stok yang sudah dihitung */}
-                  <td className="py-2 px-4 text-center">{totalStok}</td>
-                  <td className="py-2 px-4 text-center">Rp.{produk.harga}</td>
+                  <td className="py-2 px-4 text-center">
+                    {produk.total_stock || 0}
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(produk.harga)}
+                  </td>
                   <td className="py-2 px-4 flex gap-2 justify-center">
                     <button
                       onClick={() => handleEditClick(produk)}

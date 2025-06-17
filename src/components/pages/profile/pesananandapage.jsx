@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { ArrowLeft, Plus, Minus } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Separator } from "../../ui/separator";
@@ -49,16 +49,10 @@ export default function PesananAndaPage() {
       minimumFractionDigits: 0,
     }).format(amount);
 
-  // Fungsi untuk mengambil HANYA data keranjang
   const fetchCartData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const id_user = localStorage.getItem("id_user");
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const cartResponse = await axios.get(`http://localhost:3001/api/cart`, {
-        headers,
-      });
+      // Panggil apiClient, header ditangani otomatis
+      const cartResponse = await apiClient.get(`/api/cart`);
 
       const transformedCartItems = cartResponse.data.map((item) => ({
         id: `${item.id_produk}-${item.size}`,
@@ -69,12 +63,12 @@ export default function PesananAndaPage() {
         variant: `Ukuran : ${item.size}`,
         price: item.price,
         quantity: item.qty,
-        image: `http://localhost:3001/uploads/${item.image}`,
+        // Gunakan variabel .env untuk URL gambar
+        image: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image}`,
       }));
 
       setCartItems(transformedCartItems);
 
-      // Inisialisasi item terpilih jika ini adalah pemuatan pertama
       if (selectedItems === null) {
         const allItemIds = transformedCartItems.map((item) => item.id);
         setSelectedItems(new Set(allItemIds));
@@ -84,15 +78,11 @@ export default function PesananAndaPage() {
     }
   };
 
-  // Fungsi untuk mengambil HANYA data pesanan
   const fetchOrdersData = async () => {
     try {
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
-      const ordersResponse = await axios.get(
-        "http://localhost:3001/api/orders",
-        { headers }
-      );
+      const ordersResponse = await apiClient.get("/api/orders");
 
       const allOrders = ordersResponse.data;
       const ongoing = allOrders.filter(
@@ -109,7 +99,6 @@ export default function PesananAndaPage() {
     }
   };
 
-  // useEffect utama untuk memuat semua data saat halaman pertama kali dibuka
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -124,10 +113,8 @@ export default function PesananAndaPage() {
     };
 
     loadInitialData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Dependensi kosong agar hanya berjalan sekali saat mount
+  }, []);
 
-  // useEffect untuk menyimpan item terpilih ke localStorage
   useEffect(() => {
     if (selectedItems !== null) {
       localStorage.setItem(
@@ -139,14 +126,11 @@ export default function PesananAndaPage() {
 
   const handleUpdateQuantity = async (item, newQuantity) => {
     try {
-      const id_user = localStorage.getItem("id_user");
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:3001/api/cart/${id_user}/update`,
-        { id_produk: item.id_produk, size: item.size, quantity: newQuantity },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // Cukup panggil fetchCartData, tidak perlu semua data
+      await apiClient.put(`/api/cart/update`, {
+        id_produk: item.id_produk,
+        size: item.size,
+        quantity: newQuantity,
+      });
       await fetchCartData();
     } catch (error) {
       console.error("Gagal update kuantitas:", error);
@@ -154,19 +138,20 @@ export default function PesananAndaPage() {
   };
 
   const handleRemoveItem = async (id_produk, size) => {
-    if (!window.confirm(`Hapus item ini (Ukuran: ${size}) dari keranjang?`))
+    if (!window.confirm(`Hapus item ini (Ukuran: ${size}) dari keranjang?`)) {
       return;
+    }
     try {
-      const id_user = localStorage.getItem("id_user");
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3001/api/cart/${id_user}/remove`, {
-        headers: { Authorization: `Bearer ${token}` },
-        data: { id_produk, size },
-      });
-      // Cukup panggil fetchCartData, tidak perlu semua data
+      const body = { id_produk, size };
+      await apiClient.post("/api/cart/remove", body);
+      alert("Item berhasil dihapus dari keranjang.");
       await fetchCartData();
     } catch (error) {
-      console.error("Gagal menghapus item:", error);
+      console.error(
+        "Gagal menghapus item:",
+        error.response?.data || error.message
+      );
+      alert("Gagal menghapus item dari keranjang.");
     }
   };
 
@@ -198,14 +183,9 @@ export default function PesananAndaPage() {
     ) {
       return;
     }
-
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3001/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await apiClient.delete(`/api/orders/${orderId}`);
       alert("Pesanan berhasil dibatalkan.");
-      // Muat ulang data pesanan untuk menampilkan status terbaru
       await fetchOrdersData();
     } catch (error) {
       console.error("Gagal membatalkan pesanan:", error);
@@ -351,7 +331,7 @@ export default function PesananAndaPage() {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex gap-4">
                         <img
-                          src={`http://localhost:3001/uploads/${item.product_image}`}
+                          src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.product_image}`}
                           alt={item.product_name}
                           className="w-16 h-16 object-cover rounded-md bg-gray-100"
                         />

@@ -3,9 +3,7 @@ import promoModel from "../../assets/model1.png";
 import Background2 from "../../assets/Background2.png";
 import ProductScroller from "./Productscroller"; // Komponen ini akan kita ubah
 import { useNavigate } from "react-router-dom";
-
-// --- KONFIGURASI PENTING ---
-const API_BASE_URL = "http://localhost:3001";
+import apiClient from "../../../api/axios"; // Sesuaikan path jika perlu
 
 export default function Home() {
   const navigate = useNavigate();
@@ -20,7 +18,6 @@ export default function Home() {
 
   // Fungsi untuk mengarahkan ke halaman login, akan digunakan oleh semua tombol
   const handleRedirectToLogin = (event) => {
-    // Mencegah aksi default, misalnya pada tombol submit form
     if (event) event.preventDefault();
     navigate("/login");
   };
@@ -28,19 +25,14 @@ export default function Home() {
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/produk`);
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data dari server.");
-        }
-        const data = await response.json();
+        const response = await apiClient.get("/api/produk");
+        const data = response.data;
 
-        // Bagikan data: 4 produk pertama untuk seksi hero
         setHeroProducts(data.slice(0, 4));
-        // Sisa produk (atau semua produk) untuk ProductScroller
         setScrollerProducts(data);
       } catch (err) {
         console.error("Error fetching products:", err);
-        setError(err.message);
+        setError("Gagal mengambil data produk.");
       } finally {
         setLoading(false);
       }
@@ -90,7 +82,7 @@ export default function Home() {
                         {p.brand_name}
                       </p>
                       <img
-                        src={`${API_BASE_URL}/uploads/${p.image_url}`}
+                        src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`}
                         alt={p.nama}
                         className="max-w-full max-h-full object-contain rounded"
                       />

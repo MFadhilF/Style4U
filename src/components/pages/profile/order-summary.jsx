@@ -7,7 +7,7 @@ export default function OrderSummary({
   address,
   shippingMethod,
   paymentMethod,
-  onContinue, // Ganti nama prop agar lebih jelas
+  onContinue,
   orderItems = [],
   subtotal = 0,
   shippingCost = 0,
@@ -174,12 +174,10 @@ export default function OrderSummary({
               <span className="text-gray-600">
                 Subtotal ({orderItems.length} item)
               </span>
-              {/* Gunakan subtotal dari props */}
               <span className="text-gray-900">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Ongkos Kirim</span>
-              {/* Gunakan shippingCost dari props */}
               <span className="text-gray-900">
                 {shippingCost === 0 ? "Gratis" : formatCurrency(shippingCost)}
               </span>

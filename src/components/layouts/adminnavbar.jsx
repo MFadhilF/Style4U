@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../api/axios";
 
 const AdminNavbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,16 +14,14 @@ const AdminNavbar = () => {
         const id_user = localStorage.getItem("id_user");
 
         if (!token || !id_user) return;
-
-        const res = await axios.get(`http://localhost:3001/api/user/${id_user}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await apiClient.get(`/api/user/${id_user}`);
 
         setName(res.data.name);
       } catch (error) {
-        console.error("Gagal mengambil nama user:", error.response?.data || error.message);
+        console.error(
+          "Gagal mengambil nama user:",
+          error.response?.data || error.message
+        );
       }
     };
 

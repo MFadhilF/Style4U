@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import LogoImage from "../../../components/assets/style4u-logo.png";
 import LoginBanner from "../../../components/assets/loginbanner.png";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,12 +11,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:3001/api/login", {
+      const res = await apiClient.post("/api/login", {
         email,
         password,
       });
@@ -34,7 +33,10 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Login gagal.");
+      setError(
+        err.response?.data?.message ||
+          "Login gagal. Periksa kembali email dan password Anda."
+      );
     }
   };
 

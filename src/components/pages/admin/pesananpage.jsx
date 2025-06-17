@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { Check, X, Eye } from "lucide-react";
 
 // Helper components untuk merapikan tampilan modal
@@ -34,13 +34,7 @@ const PesananPage = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:3001/api/admin/orders/pending",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await apiClient.get("/api/admin/orders/pending");
       setOrders(response.data);
     } catch (err) {
       setError("Gagal mengambil data pesanan. Pastikan Anda adalah Admin.");
@@ -78,12 +72,7 @@ const PesananPage = () => {
       return;
     }
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:3001/api/admin/orders/${orderId}/status`,
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await apiClient.put(`/api/admin/orders/${orderId}/status`, { status });
       alert(`Status pesanan berhasil diubah!`);
       fetchOrders(); // Ambil ulang data untuk merefresh tabel
     } catch (err) {
@@ -181,7 +170,7 @@ const PesananPage = () => {
                   </label>
                   <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                     <img
-                      src={`http://localhost:3001/uploads/${selectedOrder.items[0].image_url}`}
+                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
                       alt={selectedOrder.items[0].product_name}
                       className="max-h-60 rounded"
                     />
@@ -194,7 +183,7 @@ const PesananPage = () => {
                   <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                     {selectedOrder.payment_proof_image ? (
                       <img
-                        src={`http://localhost:3001${selectedOrder.payment_proof_image}`}
+                        src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
                         alt="Bukti Pembayaran"
                         className="max-h-60 rounded"
                       />

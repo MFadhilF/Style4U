@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, Truck } from "lucide-react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { Card, CardContent } from "../../ui/card.jsx";
 import { Button } from "../../ui/button.jsx";
 import AddAddressModal from "./addressmodal.jsx";
@@ -41,10 +41,8 @@ export default function CheckoutPage() {
     }
     try {
       setLoadingAddresses(true);
-      const response = await axios.get(
-        `http://localhost:3001/api/addresses/${id_user}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const id_user = getUserId();
+      const response = await apiClient.get(`/api/addresses/${id_user}`);
       const mappedAddresses = response.data.map((addr) => ({
         id: addr.id_address,
         label: addr.label_alamat,
@@ -84,7 +82,6 @@ export default function CheckoutPage() {
   }, []);
 
   const handleAddAddress = async (newAddressData) => {
-    const token = getToken();
     const id_user = getUserId();
 
     const payload = {
@@ -97,11 +94,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      await axios.post(
-        `http://localhost:3001/api/addresses/${id_user}`,
-        payload, // Kirim payload yang sudah benar
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await apiClient.post(`/api/addresses/${id_user}`, payload);
       setIsAddAddressModalOpen(false);
       await fetchAddresses();
     } catch (error) {
@@ -154,7 +147,6 @@ export default function CheckoutPage() {
     stepConfig[step] ? stepConfig[step].number : 1;
 
   const handleCreateOrder = async () => {
-    const token = getToken();
     const orderId = `ORD-${Date.now()}`;
     const payload = {
       orderCode: orderId,
@@ -176,13 +168,7 @@ export default function CheckoutPage() {
       })),
     };
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/orders",
-        payload,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await apiClient.post("/api/orders", payload);
       return response.data;
     } catch (error) {
       console.error("Gagal membuat pesanan:", error);
@@ -202,19 +188,18 @@ export default function CheckoutPage() {
     if (!newOrder || !newOrder.orderCode) {
       return;
     }
-    const token = getToken();
     const formData = new FormData();
     formData.append("transferProof", transferProof);
     try {
-      await axios.put(
-        `http://localhost:3001/api/orders/${newOrder.orderCode}/payment`,
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      await apiClient.put(
+        `/api/orders/${newOrder.orderCode}/payment`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        config
       );
       alert(
         "Bukti pembayaran berhasil diupload! Pesanan Anda sedang diverifikasi."

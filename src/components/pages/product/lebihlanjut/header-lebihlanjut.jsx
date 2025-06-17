@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../../api/axios";
 import { ShoppingCart, Loader2 } from "lucide-react";
 import contohdetail from "../../../assets/contohdetail.png";
 
@@ -22,8 +22,8 @@ export default function MysteryBox() {
     const fetchData = async () => {
       try {
         const [catRes, optRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/category"),
-          axios.get("http://localhost:3001/api/mystery-box/options"),
+          apiClient.get("/api/category"),
+          apiClient.get("/api/mystery-box/options"),
         ]);
 
         setCategories(catRes.data);
@@ -70,11 +70,11 @@ export default function MysteryBox() {
 
     setIsAdding(true);
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/mystery-box/add-to-cart",
-        { style, size, optionId }, // Body request yang dikirim ke backend
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await apiClient.post("/api/mystery-box/add-to-cart", {
+        style,
+        size,
+        optionId,
+      });
       alert(response.data.message);
     } catch (error) {
       alert(

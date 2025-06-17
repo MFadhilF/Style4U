@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
-import axios from "axios";
+import apiClient from "../../../api/axios";
 import { useEffect } from "react";
 
 const Category = () => {
@@ -10,7 +10,7 @@ const Category = () => {
 
   const fetchKategori = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/category");
+      const res = await apiClient.get("/api/category");
       setKategoriList(res.data);
     } catch (err) {
       console.error("Gagal memuat kategori:", err);
@@ -45,17 +45,14 @@ const Category = () => {
     if (newKategori.trim() === "") return;
 
     try {
+      const payload = { name: newKategori };
       if (isEditMode) {
-        await axios.put(`http://localhost:3001/api/category/${selectedId}`, {
-          name: newKategori,
-        });
+        await apiClient.put(`/api/category/${selectedId}`, payload);
       } else {
-        await axios.post("http://localhost:3001/api/category", {
-          name: newKategori,
-        });
+        await apiClient.post("/api/category", payload);
       }
 
-      fetchKategori(); // Refresh data
+      fetchKategori();
       setNewKategori("");
       setShowModal(false);
       setIsEditMode(false);
@@ -71,8 +68,8 @@ const Category = () => {
     if (!konfirmasi) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/category/${id}`);
-      fetchKategori(); // Refresh setelah delete
+      await apiClient.delete(`/api/category/${id}`);
+      fetchKategori();
     } catch (err) {
       console.error("Gagal menghapus kategori:", err);
     }
@@ -80,7 +77,6 @@ const Category = () => {
 
   return (
     <div className="ml-16 md:ml-56 p-6">
-
       {/* Tombol Tambah Kategori */}
       <div className="mb-4">
         <button
