@@ -176,14 +176,20 @@ export default function DataPribadi() {
       navigate("/login");
       return;
     }
-
     setLoading(true);
     try {
       const [profileRes, addressesRes] = await Promise.all([
         apiClient.get(`/api/user/${id_user}`),
         apiClient.get(`/api/addresses/${id_user}`),
       ]);
-      setProfileData(profileRes.data);
+
+      const fetchedProfile = profileRes.data;
+
+      if (fetchedProfile.foto_profil) {
+        fetchedProfile.foto_profil = `${process.env.REACT_APP_API_BASE_URL}${fetchedProfile.foto_profil}`;
+      }
+
+      setProfileData(fetchedProfile);
       setAddresses(addressesRes.data);
     } catch (err) {
       console.error("Gagal mengambil data:", err);
@@ -268,9 +274,7 @@ export default function DataPribadi() {
 
     try {
       const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       };
       const response = await apiClient.put(
         `/api/user/${id_user}/picture`,
@@ -280,7 +284,7 @@ export default function DataPribadi() {
       alert(response.data.message);
       setSelectedImage(null);
       setImagePreview("");
-      fetchData();
+      fetchData(); // Ambil ulang data agar foto profil ter-update
     } catch (err) {
       console.error("Gagal upload foto profil:", err);
       alert(err.response?.data?.message || "Gagal mengunggah foto profil.");
@@ -406,9 +410,8 @@ export default function DataPribadi() {
               <img
                 src={
                   imagePreview ||
-                  (profileData.foto_profil
-                    ? `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${profileData.foto_profil}`
-                    : "https://via.placeholder.com/150/e4c9a3/8c8c8c?text=No+Image")
+                  profileData.foto_profil ||
+                  "https://via.placeholder.com/150/e4c9a3/8c8c8c?text=No+Image"
                 }
                 alt="Foto Profil"
                 className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#e4c9a3] object-cover shadow-lg"

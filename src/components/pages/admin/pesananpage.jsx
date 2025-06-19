@@ -21,7 +21,6 @@ const DetailTextarea = ({ label, value }) => (
   </div>
 );
 
-// Komponen Utama Halaman Pesanan
 const PesananPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,12 +29,31 @@ const PesananPage = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fungsi untuk mengambil data pesanan dari backend
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const response = await apiClient.get("/api/admin/orders/pending");
-      setOrders(response.data);
+
+      const transformedOrders = response.data.map((order) => {
+        const formattedPaymentProof = order.payment_proof_image
+          ? `${process.env.REACT_APP_API_BASE_URL}${order.payment_proof_image}`
+          : null;
+
+        const formattedItems = order.items.map((item) => ({
+          ...item,
+          image_url: item.image_url
+            ? `${process.env.REACT_APP_API_BASE_URL}${item.image_url}`
+            : null,
+        }));
+
+        return {
+          ...order,
+          items: formattedItems,
+          payment_proof_image: formattedPaymentProof,
+        };
+      });
+
+      setOrders(transformedOrders);
     } catch (err) {
       setError("Gagal mengambil data pesanan. Pastikan Anda adalah Admin.");
       console.error(err);
@@ -44,24 +62,20 @@ const PesananPage = () => {
     }
   };
 
-  // Ambil data saat komponen pertama kali dimuat
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  // Fungsi untuk membuka modal dengan data pesanan yang dipilih
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
 
-  // Fungsi untuk menutup modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
   };
 
-  // Fungsi untuk memperbarui status pesanan
   const handleUpdateStatus = async (orderId, status) => {
     const statusText = status === "shipped" ? "dikirim" : "dibatalkan";
     if (
@@ -74,14 +88,13 @@ const PesananPage = () => {
     try {
       await apiClient.put(`/api/admin/orders/${orderId}/status`, { status });
       alert(`Status pesanan berhasil diubah!`);
-      fetchOrders(); // Ambil ulang data untuk merefresh tabel
+      fetchOrders();
     } catch (err) {
       alert("Gagal mengubah status pesanan.");
       console.error(err);
     }
   };
 
-  // Fungsi untuk merender JSX dari modal
   const renderOrderDetailModal = () => {
     if (!isModalOpen || !selectedOrder) return null;
 
@@ -93,7 +106,6 @@ const PesananPage = () => {
           {/* Kartu Modal: Di sini perubahan utamanya */}
           <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 relative flex flex-col max-h-[90vh] my-auto">
             {" "}
-            {/* TAMBAHKAN/UBAH: flex flex-col max-h-[90vh] my-auto */}
             {/* Header Modal */}
             <div className="flex-shrink-0">
               {" "}
@@ -108,10 +120,8 @@ const PesananPage = () => {
                 Detail Pesanan - {selectedOrder.order_code}
               </h2>
             </div>
-            {/* Konten Modal yang bisa di-scroll */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto pr-3">
               {" "}
-              {/* TAMBAHKAN: overflow-y-auto pr-3 */}
               {/* Kolom Kiri */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">
@@ -170,7 +180,7 @@ const PesananPage = () => {
                   </label>
                   <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                     <img
-                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
+                      src={selectedOrder.items[0].image_url}
                       alt={selectedOrder.items[0].product_name}
                       className="max-h-60 rounded"
                     />
@@ -183,7 +193,7 @@ const PesananPage = () => {
                   <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                     {selectedOrder.payment_proof_image ? (
                       <img
-                        src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
+                        src={selectedOrder.payment_proof_image}
                         alt="Bukti Pembayaran"
                         className="max-h-60 rounded"
                       />

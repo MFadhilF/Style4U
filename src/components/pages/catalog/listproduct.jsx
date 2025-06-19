@@ -44,7 +44,7 @@ export default function ListProduct() {
           price: new Intl.NumberFormat("id-ID").format(p.harga),
           category: p.category_name || "Uncategorized",
           grade: p.nama_grade,
-          img: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`,
+          img: `${process.env.REACT_APP_API_BASE_URL}${p.image_url}`,
           brand: p.brand_name,
           gender: p.gender || "Unisex",
           isFavorite: wishlistIds.has(p.id_produk),

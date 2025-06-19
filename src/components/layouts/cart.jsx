@@ -18,9 +18,17 @@ export default function Cart({ show, onClose }) {
 
     try {
       setLoading(true);
-      // Langsung panggil apiClient, tanpa config manual.
       const res = await apiClient.get("/api/cart");
-      setCartItems(res.data);
+
+      const transformedItems = res.data.map((item) => ({
+        ...item,
+
+        image: item.image
+          ? `${process.env.REACT_APP_API_BASE_URL}/api/uploads/${item.image}`
+          : null,
+      }));
+
+      setCartItems(transformedItems);
     } catch (error) {
       console.error("Gagal mengambil item keranjang:", error);
     } finally {
@@ -117,7 +125,7 @@ export default function Cart({ show, onClose }) {
                   className="flex gap-4 items-center p-2 border-b border-gray-200"
                 >
                   <img
-                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image}`}
+                    src={item.image} // Langsung gunakan karena sudah URL lengkap
                     alt={item.name}
                     className="w-20 h-24 object-cover rounded-md"
                   />

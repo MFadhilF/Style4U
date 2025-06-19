@@ -29,7 +29,7 @@ export default function WishlistPage() {
         kategori: item.category_name,
         harga: new Intl.NumberFormat("id-ID").format(item.harga),
         grade: `Grade ${item.nama_grade}`,
-        gambar: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image_url}`,
+        gambar: `${process.env.REACT_APP_IMAGE_BASE_URL}/${item.image_url}`,
         isFavorite: true,
       }));
 

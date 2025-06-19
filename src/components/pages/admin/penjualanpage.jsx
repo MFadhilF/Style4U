@@ -32,7 +32,26 @@ const PenjualanPage = () => {
     try {
       setLoading(true);
       const response = await apiClient.get("/api/admin/orders");
-      setSales(response.data);
+      const transformedSales = response.data.map((order) => {
+        const formattedPaymentProof = order.payment_proof_image
+          ? `${process.env.REACT_APP_API_BASE_URL}${order.payment_proof_image}`
+          : null;
+
+        const formattedItems = order.items.map((item) => ({
+          ...item,
+          image_url: item.image_url
+            ? `${process.env.REACT_APP_API_BASE_URL}${item.image_url}`
+            : null,
+        }));
+
+        return {
+          ...order,
+          items: formattedItems,
+          payment_proof_image: formattedPaymentProof,
+        };
+      });
+
+      setSales(transformedSales);
     } catch (err) {
       setError("Gagal mengambil riwayat penjualan.");
       console.error(err);
@@ -131,7 +150,7 @@ const PenjualanPage = () => {
                 </label>
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   <img
-                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
+                    src={selectedOrder.items[0].image_url}
                     alt={selectedOrder.items[0].product_name}
                     className="max-h-60 rounded"
                   />
@@ -144,7 +163,7 @@ const PenjualanPage = () => {
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   {selectedOrder.payment_proof_image ? (
                     <img
-                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
+                      src={selectedOrder.payment_proof_image}
                       alt="Bukti Pembayaran"
                       className="max-h-60 rounded"
                     />

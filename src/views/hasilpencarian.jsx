@@ -1,9 +1,7 @@
-// HasilPencarian.jsx (Versi Final dengan Debounce & Kategori Dinamis)
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
-import _ from "lodash"; // Kita akan gunakan lodash untuk debounce
+import apiClient from "../api/axios";
+import _ from "lodash";
 
 import SidebarFilter from "../components/layouts/sidebarfilter.jsx";
 import SearchResultPage from "../components/pages/searchresult/searchresultpage.jsx";
@@ -11,9 +9,8 @@ import SearchResultPage from "../components/pages/searchresult/searchresultpage.
 export default function HasilPencarian() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // State untuk data
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // State baru untuk kategori
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -29,14 +26,11 @@ export default function HasilPencarian() {
     sort_by: "newest",
   });
 
-  // Fungsi untuk mengambil data produk dari backend
-  // useCallback digunakan untuk optimasi, agar fungsi ini tidak dibuat ulang setiap render
   const fetchProducts = useCallback(
     _.debounce((currentFilters) => {
       setLoading(true);
       setError(null);
 
-      // Buat salinan filter yang bersih untuk URL, hapus nilai kosong
       const cleanFilters = Object.entries(currentFilters).reduce(
         (acc, [key, value]) => {
           if (value) {
@@ -49,18 +43,18 @@ export default function HasilPencarian() {
 
       const params = new URLSearchParams(cleanFilters).toString();
 
-      axios
-        .get(`http://localhost:3001/api/produk?${params}`)
+      apiClient
+        .get(`/api/produk?${params}`)
         .then((response) => {
           const translatedProducts = response.data.map((backendProduct) => ({
             id: backendProduct.id_produk,
             name: backendProduct.nama,
-            img: `http://localhost:3001/uploads/${backendProduct.image_url}`,
+            img: `${process.env.REACT_APP_API_BASE_URL}${backendProduct.image_url}`,
             brand: backendProduct.brand_name,
             price: (backendProduct.harga || 0).toLocaleString("id-ID"),
             grade: backendProduct.nama_grade,
             gender: backendProduct.gender,
-            isFavorite: false,
+            isFavorite: false, 
           }));
           setProducts(translatedProducts);
           setSearchParams(cleanFilters, { replace: true });
@@ -74,21 +68,19 @@ export default function HasilPencarian() {
         });
     }, 500),
     []
-  ); // Jeda 500ms setelah user berhenti mengetik
+  );
 
-  // useEffect untuk mengambil KATEGORI saat komponen pertama kali dimuat
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/category")
+    apiClient
+      .get("/api/category")
       .then((response) => {
         setCategories(response.data);
       })
       .catch((error) => {
         console.error("Gagal mengambil daftar kategori:", error);
       });
-  }, []); // Hanya berjalan sekali
+  }, []);
 
-  // useEffect untuk memanggil fetchProducts setiap kali filter berubah
   useEffect(() => {
     fetchProducts(filters);
   }, [filters, fetchProducts]);
@@ -106,7 +98,7 @@ export default function HasilPencarian() {
       <SidebarFilter filters={filters} onFilterChange={handleFilterChange} />
       <SearchResultPage
         products={products}
-        categories={categories} // Kirim kategori ke komponen anak
+        categories={categories}
         loading={loading}
         error={error}
         filters={filters}

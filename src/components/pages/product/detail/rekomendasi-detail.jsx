@@ -40,7 +40,7 @@ const RekomendasiDetail = () => {
           id: p.id_produk,
           name: p.nama,
           // 3. Gunakan variabel .env untuk URL gambar
-          img: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${p.image_url}`,
+          img: `${process.env.REACT_APP_API_BASE_URL}${p.image_url}`,
           brand: p.brand_name,
           price: (p.harga || 0).toLocaleString("id-ID"),
           grade: p.nama_grade,

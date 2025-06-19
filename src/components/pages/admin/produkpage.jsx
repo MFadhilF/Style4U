@@ -23,7 +23,17 @@ const Produk = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedProdukInfo, setSelectedProdukInfo] = useState(null);
 
-  // Fetch produk saat halaman dimuat
+  const transformProductData = (product) => {
+    if (product && product.image_url && !product.image_url.startsWith("http")) {
+      return {
+        ...product,
+        image_url: `${process.env.REACT_APP_API_BASE_URL}${product.image_url}`,
+      };
+    }
+    return product;
+  };
+
+  // Fetch data master saat komponen dimuat
   useEffect(() => {
     fetchProduk();
     fetchCategories();
@@ -79,7 +89,8 @@ const Produk = () => {
   const fetchProduk = async () => {
     try {
       const res = await apiClient.get("/api/produk");
-      setProdukList(res.data);
+      const transformedProdukList = res.data.map(transformProductData);
+      setProdukList(transformedProdukList);
     } catch (error) {
       console.error("Gagal mengambil data produk:", error);
     }
@@ -156,23 +167,23 @@ const Produk = () => {
   };
 
   const handleEditClick = (produk) => {
-    setEditingProdukId(produk.id_produk);
+    const { image_url, ...restOfProduk } = produk;
+    setEditingProdukId(restOfProduk.id_produk);
     setFormData({
-      nama: produk.nama,
-      deskripsi: produk.deskripsi,
-      harga: produk.harga,
-      id_grade: produk.id_grade,
-      id_cat: produk.id_cat,
-      id_brand: produk.id_brand,
-      gender: produk.gender,
+      nama: restOfProduk.nama,
+      deskripsi: restOfProduk.deskripsi,
+      harga: restOfProduk.harga,
+      id_grade: restOfProduk.id_grade,
+      id_cat: restOfProduk.id_cat,
+      id_brand: restOfProduk.id_brand,
+      gender: restOfProduk.gender,
     });
-    // Pastikan stok dalam format yang benar, atau set default jika kosong
     setStokSizeList(
-      produk.stocks && produk.stocks.length > 0
-        ? produk.stocks
+      restOfProduk.stocks && restOfProduk.stocks.length > 0
+        ? restOfProduk.stocks
         : [{ size: "", stok: "" }]
     );
-    setSelectedImage(null); // Reset gambar saat edit
+    setSelectedImage(null);
     setShowModal(true);
   };
 
@@ -195,7 +206,8 @@ const Produk = () => {
   const handleInfoClick = async (produk) => {
     try {
       const res = await apiClient.get(`/api/produk/${produk.id_produk}`);
-      setSelectedProdukInfo(res.data);
+      const transformedProdukInfo = transformProductData(res.data);
+      setSelectedProdukInfo(transformedProdukInfo);
       setShowInfoModal(true);
     } catch (error) {
       console.error("Gagal mengambil detail produk:", error);
@@ -418,7 +430,7 @@ const Produk = () => {
                 </label>
                 {selectedProdukInfo.image_url ? (
                   <img
-                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedProdukInfo.image_url}`}
+                    src={selectedProdukInfo.image_url}
                     alt={selectedProdukInfo.nama}
                     className="w-full h-auto object-cover rounded-lg border"
                   />

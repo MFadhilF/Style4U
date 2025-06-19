@@ -51,9 +51,7 @@ export default function PesananAndaPage() {
 
   const fetchCartData = async () => {
     try {
-      // Panggil apiClient, header ditangani otomatis
       const cartResponse = await apiClient.get(`/api/cart`);
-
       const transformedCartItems = cartResponse.data.map((item) => ({
         id: `${item.id_produk}-${item.size}`,
         id_cart_item: item.id_cart_item,
@@ -63,8 +61,9 @@ export default function PesananAndaPage() {
         variant: `Ukuran : ${item.size}`,
         price: item.price,
         quantity: item.qty,
-        // Gunakan variabel .env untuk URL gambar
-        image: `${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.image}`,
+        image: item.image
+          ? `${process.env.REACT_APP_API_BASE_URL}/api/uploads/${item.image}`
+          : null,
       }));
 
       setCartItems(transformedCartItems);
@@ -80,11 +79,19 @@ export default function PesananAndaPage() {
 
   const fetchOrdersData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
       const ordersResponse = await apiClient.get("/api/orders");
 
-      const allOrders = ordersResponse.data;
+      const transformedOrders = ordersResponse.data.map((order) => ({
+        ...order,
+        items: order.items.map((item) => ({
+          ...item,
+          product_image: item.product_image
+            ? `${process.env.REACT_APP_API_BASE_URL}${item.product_image}`
+            : null,
+        })),
+      }));
+
+      const allOrders = transformedOrders;
       const ongoing = allOrders.filter(
         (o) => o.order_status !== "completed" && o.order_status !== "cancelled"
       );
@@ -105,13 +112,11 @@ export default function PesananAndaPage() {
       navigate("/login");
       return;
     }
-
     const loadInitialData = async () => {
       setLoading(true);
       await Promise.all([fetchCartData(), fetchOrdersData()]);
       setLoading(false);
     };
-
     loadInitialData();
   }, []);
 
@@ -331,7 +336,7 @@ export default function PesananAndaPage() {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex gap-4">
                         <img
-                          src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${item.product_image}`}
+                          src={item.product_image}
                           alt={item.product_name}
                           className="w-16 h-16 object-cover rounded-md bg-gray-100"
                         />
@@ -407,7 +412,7 @@ export default function PesananAndaPage() {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex gap-4">
                         <img
-                          src={`http://localhost:3001/uploads/${item.product_image}`}
+                          src={item.product_image}
                           alt={item.product_name}
                           className="w-16 h-16 object-cover rounded-md bg-gray-100"
                         />

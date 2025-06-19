@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import apiClient from "../../../api/axios";
 import { X } from "lucide-react";
 
+// Helper components (tidak berubah)
 const DetailField = ({ label, value }) => (
   <div>
     <label className="text-sm font-medium text-gray-600">{label}</label>
@@ -20,6 +21,7 @@ const DetailTextarea = ({ label, value }) => (
   </div>
 );
 
+// Komponen Utama
 const Dashboard = () => {
   const [latestOrders, setLatestOrders] = useState([]);
   const [stats, setStats] = useState({
@@ -37,14 +39,31 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Tidak perlu token & config. Cukup panggil apiClient dengan URL relatif.
         const [statsRes, ordersRes] = await Promise.all([
           apiClient.get("/api/admin/dashboard/stats"),
           apiClient.get("/api/admin/orders"),
         ]);
+        const transformedOrders = ordersRes.data.map((order) => {
+          const formattedPaymentProof = order.payment_proof_image
+            ? `${process.env.REACT_APP_API_BASE_URL}${order.payment_proof_image}`
+            : null;
+
+          const formattedItems = order.items.map((item) => ({
+            ...item,
+            image_url: item.image_url
+              ? `${process.env.REACT_APP_API_BASE_URL}${item.image_url}`
+              : null,
+          }));
+
+          return {
+            ...order,
+            items: formattedItems,
+            payment_proof_image: formattedPaymentProof,
+          };
+        });
 
         setStats(statsRes.data);
-        setLatestOrders(ordersRes.data.slice(0, 5));
+        setLatestOrders(transformedOrders.slice(0, 5));
       } catch (err) {
         setError(
           "Gagal mengambil data dashboard. Pastikan server backend berjalan."
@@ -62,6 +81,7 @@ const Dashboard = () => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
@@ -73,6 +93,7 @@ const Dashboard = () => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
         <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 relative flex flex-col max-h-[90vh] my-auto">
+          {/* Header Modal */}
           <div className="flex-shrink-0">
             <button
               onClick={handleCloseModal}
@@ -84,6 +105,7 @@ const Dashboard = () => {
               Detail Pesanan - {selectedOrder.order_code}
             </h2>
           </div>
+          {/* Konten Modal */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto pr-3">
             {/* Kolom Kiri */}
             <div className="space-y-4">
@@ -134,8 +156,9 @@ const Dashboard = () => {
                   Gambar Produk
                 </label>
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
+                  {/* JSX Sederhana: Langsung gunakan URL dari state */}
                   <img
-                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${selectedOrder.items[0].image_url}`}
+                    src={selectedOrder.items[0].image_url}
                     alt={selectedOrder.items[0].product_name}
                     className="max-h-60 rounded"
                   />
@@ -147,8 +170,9 @@ const Dashboard = () => {
                 </label>
                 <div className="mt-1 p-2 border rounded-md flex justify-center bg-gray-50">
                   {selectedOrder.payment_proof_image ? (
+                    // JSX Sederhana: Langsung gunakan URL dari state
                     <img
-                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}${selectedOrder.payment_proof_image}`}
+                      src={selectedOrder.payment_proof_image}
                       alt="Bukti Pembayaran"
                       className="max-h-60 rounded"
                     />
@@ -161,6 +185,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          {/* Footer Modal */}
           <div className="flex justify-end mt-8 flex-shrink-0">
             <button
               onClick={handleCloseModal}
@@ -263,9 +288,7 @@ const Dashboard = () => {
                       onClick={() => handleViewDetails(order)}
                       className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md"
                     >
-                      {" "}
                       Selengkapnya
-                      {/* <Eye size={16} /> */}
                     </button>
                   </td>
                 </tr>
@@ -280,8 +303,6 @@ const Dashboard = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Panggil fungsi untuk merender modal */}
       {renderOrderDetailModal()}
     </div>
   );

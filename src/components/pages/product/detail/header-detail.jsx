@@ -121,19 +121,17 @@ export default function Detail({ product }) {
   // --- JSX tetap sama, karena sudah menggunakan state 'isFavorite' ---
   return (
     <div className="flex flex-col items-center justify-center px-4 py-8">
-      {/* KOTAK DETAIL PRODUK UTAMA */}
       <div className="flex w-full max-w-5xl h-auto bg-[#F0F0F7] rounded-2xl overflow-hidden flex-col md:flex-row shadow-lg">
-        {/* ... Sisi Kiri: Gambar Produk ... */}
         <div className="relative w-full md:w-5/12 flex-shrink-0 flex items-center justify-center p-8 bg-blue-500 rounded-2xl md:rounded-r-none md:rounded-l-2xl">
+          <img
+            src={`${process.env.REACT_APP_API_BASE_URL}${product.image_url}`}
+            alt={product.nama}
+            className="relative z-10 w-3/4 md:w-full max-w-[270px] h-auto object-contain drop-shadow-2xl"
+          />
           <img
             src={bintangBg}
             alt="bg"
             className="absolute w-full h-full object-cover opacity-80"
-          />
-          <img
-            src={`${process.env.REACT_APP_IMAGE_BASE_URL}/uploads/${product.image_url}`}
-            alt={product.nama}
-            className="relative z-10 w-3/4 md:w-full max-w-[270px] h-auto object-contain drop-shadow-2xl"
           />
         </div>
 
